@@ -1,0 +1,75 @@
+# ===============================
+# Backend (Python / Flask)
+# ===============================
+
+# Environment variables
+.env
+.env.*
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Logs
+backend/logs/
+*.log
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# barcode images
+static/
+
+# SQLite / local DB (agar use ho rahi ho)
+*.db
+*.sqlite3
+
+# ===============================
+# Frontend (React + Vite)
+# ===============================
+
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Vite cache
+.vite/
+
+# ===============================
+# IDE / OS specific
+# ===============================
+
+# VS Code
+.vscode/
+
+# IntelliJ / PyCharm
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# ===============================
+# Git related (safety)
+# ===============================
+*.orig
+
+# ===============================
+# project structure
+# ===============================
+project_structure.md
