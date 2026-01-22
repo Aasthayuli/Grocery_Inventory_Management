@@ -97,33 +97,6 @@ def get_all_transactions():
         current_app.logger.error(f'Error in getting transactions: {str(e)}')
         return error_response(f'Failed to fetch transactions', status_code=500)
 
-@transaction_bp.route('/<int:transaction_id>', methods=['GET'])
-@jwt_required()
-def get_transaction(transaction_id):
-    """
-    Get single transaction by ID
-
-    Returns:
-        200: Transactions details
-        404: Transaction not found
-    """
-    try:
-        transaction = Transaction.query.get(transaction_id)
-
-        if not transaction:
-            logger.warning(f'Transaction not found- ID: {transaction_id}')
-            return error_response(f'Transaction not found', status_code= 404)
-
-        logger.info(f'Transaction fetched: ID {transaction_id}')
-
-        return success_response(
-            f'Transaction retrieved',
-            data= transaction.to_dict(include_relations=True)
-        )
-    except Exception as e:
-        logger.error(f'Error in fetching Transaction: {str(e)}')
-        current_app.logger.error(f'Error in fetching Transaction: {str(e)}')
-        return error_response(f'Failed to retrieve transaction', status_code= 500)
 
 @transaction_bp.route('/stock-in', methods=['POST'])
 @jwt_required()
@@ -275,43 +248,6 @@ def stock_out():
         logger.error(f'Stock OUT error: {str(e)}')
         current_app.logger.error(f'Stock OUT error: {str(e)}')
         return error_response('Stock out Failed', status_code= 500)
-
-@transaction_bp.route('/history/<int:product_id>', methods=['GET'])
-@jwt_required()
-def get_product_history(product_id):
-    """
-    Get Transaction history for a specific product
-
-    Returns:
-       200: Transaction history
-       404: Product not found
-    """
-    try:
-
-        product = Product.query.get(product_id)
-
-        if not product:
-            return error_response('Product not found.',status_code= 404 )
-
-        transactions = Transaction.query.filter_by(product_id = product_id).order_by(Transaction.date.desc()).all()
-
-        transaction_data = [t.to_dict(include_relations=True) for t in transactions]
-
-        logger.info(f'Transaction History fetch for: {product.name} - {len(transactions)} records.')
-
-        return success_response(
-            f'Transaction history for {product.name}',
-            data = {
-                'product': product.to_dict(),
-                'transactions': transaction_data,
-                'total_transactions': len(transactions)
-            }
-        )
-
-    except Exception as e:
-        logger.error(f'Error in get_product_history: {str(e)}')
-        current_app.logger.error(f'Error in get_product_history: {str(e)}')
-        return error_response('Failed to fetch transaction history', status_code= 500)
 
 @transaction_bp.route('/stats', methods=['GET'])
 @jwt_required()

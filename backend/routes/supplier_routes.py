@@ -77,31 +77,6 @@ def get_all_suppliers():
         current_app.logger.error(f'Error in getting all suppliers: {str(e)}')
         return error_response(f'Failed to get all suppliers!', status_code= 500)
 
-@supplier_bp.route('/<int:supplier_id>', methods=['GET'])
-@jwt_required()
-def get_supplier(supplier_id):
-    """
-    Get Single Supplier by ID
-
-    Returns:
-        200: Fetched Supplier successfully
-        404: Supplier not found
-    """
-    try:
-        supplier = Supplier.query.get(supplier_id)
-
-        if not supplier:
-            logger.warning(f'Supplier not found: ID {supplier_id}')
-            return error_response(f'Supplier not found', status_code= 404)
-
-        logger.info(f'Supplier found: {supplier.name} (ID: {supplier_id})')
-
-        return success_response(f'Supplier retrieved', data= supplier.to_dict())
-    except Exception as e:
-        logger.error(f'Error in fetching single supplier: {str(e)}')
-        current_app.logger.error(f'Error in fetching single supplier: {str(e)}')
-        return error_response(f'failed to fetch supplier', status_code= 500)
-
 @supplier_bp.route('', methods=['POST'])
 @jwt_required()
 def create_supplier():
@@ -268,35 +243,3 @@ def delete_supplier(supplier_id):
         current_app.logger.error(f'Error in deleting Supplier: {str(e)}')
         return error_response('Failed to delete supplier', status_code= 500)
 
-@supplier_bp.route('/<int:supplier_id>/products', methods=['GET'])
-@jwt_required()
-def get_supplier_products(supplier_id):
-    """
-    Get all products from a specific supplier
-
-    Returns:
-        200: List of products
-        404: Supplier not found
-    """
-    try:
-        supplier = Supplier.query.get(supplier_id)
-
-        if not supplier:
-            return error_response(f'Supplier not found!', status_code= 404)
-
-        products_data = [p.to_dict() for p in supplier.products]
-
-        logger.info(
-            f'Supplier products fetched: {supplier.name} - {len(products_data)} products'
-        )
-        return success_response(
-            f'Products from {supplier.name}',
-                    data={
-                        'supplier':supplier.to_dict(),
-                        'products': products_data
-                    }
-        )
-    except Exception as e:
-        logger.error(f'Error in fetching supplier products: {str(e)}')
-        current_app.logger.error(f'Error in fetching supplier products: {str(e)}')
-        return error_response(f'failed to fetch supplier products', status_code= 500)

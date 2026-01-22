@@ -40,7 +40,7 @@ class Supplier(db.Model):
             'contact' : self.contact,
             'email' : self.email if self.email else None,
             'address' : self.address if self.address else None,
-            'creeated_at' : self.created_at if self.created_at else None,
+            'created_at' : self.created_at if self.created_at else None,
             'product_count' : len(self.products)   # total products from this supplier
         }
     

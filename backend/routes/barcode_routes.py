@@ -3,7 +3,7 @@ Barcode Routes
 Generate, search, and manage product barcodes
 """
 
-from flask import Blueprint, current_app,send_file, request
+from flask import Blueprint, current_app, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from config.database import db
@@ -158,80 +158,7 @@ def get_barcode_image_url(product_id):
         return error_response('Failed to retrieve barcode image URL', status_code= 500)
 
 
-@barcode_bp.route('/regenerate/<int:product_id>', methods=['POST'])
-@jwt_required()
-def regenerate_barcode(product_id):
-    """
-    Regenerate barcode for a product (overwrite existing)
 
-    Returns:
-        200: barcode generated
-        404: product not found
-    """
-    try:
-        product = Product.query.get(product_id)
-
-        if not product:
-            return error_response(f'Product not found', status_code= 404)
-
-        old_barcode = product.barcode
-
-        # Generate new barcode
-        barcode_info = generate_and_save_barcode(product.id, product.name)
-
-        # Update product
-        product.barcode = barcode_info['barcode_number']
-        db.session.commit()
-
-        logger.info(f'Barcode regenerated: {product.barcode} (ID: {product_id}) - '
-                    f'Old: {old_barcode} -> New: {product.barcode}')
-
-        return success_response(
-            'Barcode regenerated successfully',
-            data= {
-                'product_id': product.id,
-                'product_name': product.name,
-                'old_barcode': old_barcode,
-                'new_barcode': product.barcode
-            }
-        )
-    except Exception as e:
-        logger.error(f'Error in Barcode regeneration: {str(e)}')
-        current_app.logger.error(f'Error in Barcode regeneration: {str(e)}')
-        return error_response('Failed to regenerate Barcode!', status_code= 500)
-
-@barcode_bp.route('/validate-barcode', methods=['POST'])
-@jwt_required()
-def validate_barcode_format():
-    """
-    Validate Barcode format
-
-    Returns:
-        200: Validation result
-    """
-    try:
-
-        data = request.get_json()
-
-        if 'barcode' not in data:
-            return error_response('Barcode field required', status_code= 400)
-
-        barcode = data['barcode'].strip()
-        is_valid = validate_barcode(barcode)
-
-        logger.debug(f'Barcode Validation: {barcode} - Valid: {is_valid}')
-
-        return success_response('Barcode validated', data={'barcode':barcode, 'is_valid':is_valid, 'length':len(barcode) if barcode else 0})
-    except Exception as e:
-        logger.error(f'Barcode Validation Error: {str(e)}')
-        current_app.logger.error(f'Barcode Validation Error: {str(e)}')
-        return error_response('Barcode Validation failed', status_code= 500)
-
-
-@barcode_bp.route('/bulk-generate-barcode', methods=['POST'])
-@jwt_required()
-def bulk_generate_barcode():
-    pass
 
 
 

@@ -236,33 +236,5 @@ def logout():
         current_app.logger.error(f'Logout error: {str(e)}')
         return error_response('Logout failed!', status_code=500)
 
-@auth_bp.route('/users', methods=['GET'])
-@jwt_required()
-def get_all_users():
-    """
-    get all users (Only for Admin)
 
-    Headers:
-        Authorization: Bearer <access_token>
-
-    Returns:
-        200: List of users
-        403: Forbidden (not admin)
-    """
-
-    try:
-        current_user_id = int(get_jwt_identity())
-        current_user = User.query.get(current_user_id)
-
-        if current_user.role != 'admin':
-            auth_logger.warning(f'Unauthorized access attempt: {current_user.username} tried to view users')
-            return error_response("Admin access required", status_code=403)
-
-        users = User.query.all()
-        auth_logger.info(f'Users list accessed by: {current_user.username}')
-
-        return success_response('Users retrived', data= [user.to_dict() for user in users])
-
-    except Exception as e:
-        current_app.logger.error(f'Get users error: {str(e)}')
-        return error_response('Failed to fetch users', status_code=500)
+    

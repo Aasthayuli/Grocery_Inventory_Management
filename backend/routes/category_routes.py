@@ -39,11 +39,6 @@ def get_all_categories():
         current_app.logger.error(f'Get categories error: {str(e)}')
         return error_response('Failed to fetch categories', status_code=500)
 
-@category_bp.route('/<int:category_id>', methods=['GET'])
-@jwt_required()
-def get_category(category_id):
-    pass
-
 @category_bp.route('', methods=['POST'])
 @jwt_required()
 def create_category():
@@ -156,34 +151,6 @@ def delete_category(category_id):
         current_app.logger.error(f'Error while deleting category: {str(e)}')
         return error_response(f'Failed to delete Category', status_code= 500)
 
-@category_bp.route('/<int:category_id>/products', methods=['GET'])
-@jwt_required()
-def get_category_product(category_id):
-    """
-    get all products in a category
-
-    Returns:
-        200: List of Products
-        404: category not found
-    """
-    try:
-        category = Category.query.get(category_id)
-
-        if not category:
-            return error_response(f'category not found', status_code= 404)
-
-        products_data = [p.to_dict() for p in category.products]
-
-        logger.info(f'Category products fetched: {category.name} - {len(products_data)} products')
-
-        return success_response(f'Products in {category.name}', data = {
-            'category': category.to_dict(),
-            'products': products_data
-        })
-    except Exception as e:
-        logger.error(f'Error in fetching all products for a category: {str(e)}')
-        current_app.logger.error(f'Error in fetching all products for a category: {str(e)}')
-        return error_response(f'Failed to fetch category products', status_code= 500)
 
 
 
