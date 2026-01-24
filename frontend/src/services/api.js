@@ -9,10 +9,11 @@ const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY || "grocery_auth_token";
 const REFRESH_TOKEN_KEY =
   import.meta.env.VITE_REFRESH_TOKEN_KEY || "grocery_refresh_token";
 const USER_KEY = "grocery_user";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // create axios instance with base configuration
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+  baseURL: API_URL || "http://localhost:5000",
   timeout: 10000, // 10 seconds
   headers: {
     "Content-Type": "application/json",
