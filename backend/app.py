@@ -36,7 +36,6 @@ def create_app():
         f"{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:"
         f"{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
         #  f"?ssl_ca={CA_PATH}"
-        "?ssl-mode=REQUIRED"  # for deployment
         )
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #To avoid unnecessary overhead because we are not using SQLAlchemy event-based signals.
         app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
