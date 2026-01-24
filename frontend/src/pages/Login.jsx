@@ -286,6 +286,7 @@ const Login = () => {
                     className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
                   >
                     <option value="staff">Staff</option>
+                    {/* <option value="admin">Admin</option> */}
                   </select>
                 </div>
 

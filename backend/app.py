@@ -26,13 +26,17 @@ def create_app():
     app.logger.info("Starting Flask Application Initialization . . .")
 
     # Configuration from .env file
-    # example: mysql+pymysql://root:password123@localhost:5000/inventory_db?ssl_ca=/etc/ssl/certs/ca-certificates.crt -> Mysql connection string
+    # example: mysql+pymysql://root:password123@localhost:5000/inventory_db?CA_PATH-> Mysql connection string
     try:
+        # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        # CA_PATH = os.path.join(BASE_DIR, "config", "ca.pem")
+
         app.config['SQLALCHEMY_DATABASE_URI'] = (
         f"mysql+pymysql://{os.getenv('DB_USER')}:"
         f"{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:"
         f"{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
-        # "?ssl_ca=/etc/ssl/certs/ca-certificates.crt"  # SSH setup for Aiven 
+        #  f"?ssl_ca={CA_PATH}"
+        "?ssl-mode=REQUIRED"  # for deployment
         )
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #To avoid unnecessary overhead because we are not using SQLAlchemy event-based signals.
         app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')

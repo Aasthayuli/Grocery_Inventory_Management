@@ -29,9 +29,12 @@ htmlcov/
 # barcode images
 static/
 
-# SQLite / local DB (agar use ho rahi ho)
+# SQLite / local DB 
 *.db
 *.sqlite3
+
+# config
+*.pem
 
 # ===============================
 # Frontend (React + Vite)

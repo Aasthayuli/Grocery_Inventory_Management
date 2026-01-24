@@ -256,7 +256,7 @@ export const Suppliers = () => {
                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-4 border-t border-gray-200">
                   <button
                     onClick={() => handleOpenModal(supplier)}
-                    className="cursor-pointer bg-green-50 text-green-600 py-2 rounded-lg hover:bg-green-100 transition flex items-center justify-center space-x-2 text-sm sm:text-base"
+                    className="cursor-pointer bg-green-50 text-green-600 px-4 py-2 rounded-lg hover:bg-green-100 transition flex items-center justify-center space-x-2 text-sm sm:text-base"
                   >
                     <Edit className="h-4 w-4" />
                     <span>Edit</span>
@@ -264,7 +264,7 @@ export const Suppliers = () => {
                   {userIsAdmin && (
                     <button
                       onClick={() => handleDelete(supplier.id, supplier.name)}
-                      className="cursor-pointer bg-red-50 text-red-600 py-2 rounded-lg hover:bg-red-100 transition flex items-center justify-center space-x-2 text-sm sm:text-base"
+                      className="cursor-pointer bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition flex items-center justify-center space-x-2 text-sm sm:text-base"
                     >
                       <Trash2 className="h-4 w-4" />
                       <span>Delete</span>
