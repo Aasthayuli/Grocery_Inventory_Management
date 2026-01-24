@@ -1,0 +1,5 @@
+[tool.poetry]
+name = "grocery_inventory"          
+version = "0.1.0"                   
+description = "Grocery Inventory Management backend"  
+authors = ["Aastha <aasthayuli2000@gmail.com>"]   
