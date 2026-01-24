@@ -71,8 +71,3 @@ Desktop.ini
 # Git related (safety)
 # ===============================
 *.orig
-
-# ===============================
-# project structure
-# ===============================
-project_structure.md
