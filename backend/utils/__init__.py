@@ -13,10 +13,8 @@ from .helpers import (
 
 from .barcode_generator import (
     generate_barcode,
-    save_barcode_image,
     generate_and_save_barcode,
     validate_barcode,
-    get_barcode_image_path
 )
 
 __all__ = [
@@ -27,8 +25,6 @@ __all__ = [
     'parse_date',
     'paginate_query',
     'generate_barcode',
-    'save_barcode_image',
     'generate_and_save_barcode',
     'validate_barcode',
-    'get_barcode_image_path'
 ]

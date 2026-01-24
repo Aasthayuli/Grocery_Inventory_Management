@@ -4,81 +4,23 @@ Generate, search, and manage product barcodes
 """
 
 from flask import Blueprint, current_app, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 from config.database import db
 from config.logging_config import AppLogger
+from config.cloudinary_config import upload_to_cloudinary
 from models import Product
 from utils import (
         success_response,
         error_response,
         generate_and_save_barcode,
         validate_barcode,
-        get_barcode_image_path
 )
 
 
 # create blueprint
 barcode_bp = Blueprint('barcode', __name__, url_prefix='/api/barcode')
 logger = AppLogger.get_barcode_logger()
-
-
-@barcode_bp.route('/generate/<int:product_id>', methods=['POST'])
-@jwt_required()
-def generate_barcode_for_product(product_id):
-    """
-    Generate barcode for a product
-
-    Returns:
-        200: Barcode generated successfully
-        404: Product not found
-    """
-    try:
-
-        product = Product.query.get(product_id)
-
-        if not product:
-            logger.warning(f'Barcode generation failed - Product not found: ID {product_id}')
-            return error_response(f'Product not found', status_code= 404)
-
-        # check if barcode already exists
-        if product.barcode:
-            logger.info(f'Product already has a barcode: {product.name} - ({product.barcode})')
-            return success_response(
-                f'Product already has a Barcode',
-                data= {
-                    'product_id': product.id,
-                    'product_name': product.name,
-                    'barcode': product.barcode,
-                    'image_path':get_barcode_image_path(product.barcode)
-                }
-            )
-
-        # generate barcode
-        barcode_info = generate_and_save_barcode(product.id, product.name)
-
-        # Update product with barcode
-        product.barcode = barcode_info['barcode_number']
-        db.session.commit()
-
-        logger.info(
-            f'Barcode generated: {product.name} (ID: {product_id}) - '
-            f'barcode: {product.barcode}'
-        )
-        return success_response(
-            'Barcode generated successfully',
-            data = {
-                'product_id': product.id,
-                'product_name': product.name,
-                'barcode': product.barcode,
-                'image_path': barcode_info['image_path']
-            }
-        )
-    except Exception as e:
-        db.session.rollback()
-        logger.error(f'Barcode generation Error: {str(e)}')
-        current_app.logger.error(f'Barcode generation Error: {str(e)}')
-        return error_response('Failed to generate Barcode', status_code= 500)
 
 @barcode_bp.route('/search/<barcode_number>', methods=['GET'])
 @jwt_required()
@@ -120,17 +62,8 @@ def get_barcode_image_url(product_id):
     """
     Get barcode image file URL for a product
 
-    This API does NOT return the image file.
-    It only returns the public URL of the barcode image
-    based on the product's barcode number.
-
     Returns:
-    200: Product found
-
-    400: Validation Error
-        - Product not found
-        - Barcode not generated for product
-
+    200: Product found      
     404: Product not found
     """
     try:
@@ -142,13 +75,19 @@ def get_barcode_image_url(product_id):
         if not product.barcode:
             return error_response('Barcode not Found', status_code= 404)
         
-        BASE_URL = current_app.config.get("BARCODE_BASE_URL")
+        storage_mode = current_app.config.get('IMAGE_STORAGE', 'local')
 
-        # get image path
-        barcode_url = f"{BASE_URL}/static/barcodes/barcode_{product.barcode}.png"
-
+        if storage_mode == 'cloud':
+            # cloudinary url
+            base_url = current_app.config.get("CLOUD_BARCODE_BASE_URL")
+            barcode_url = f"{base_url}/image/upload/grocery_barcodes/barcode_{product.barcode}.png"
+        else:
+            # local url
+            base_url = current_app.config.get("LOCAL_BARCODE_BASE_URL")
+            barcode_url = f"{base_url}/static/barcodes/barcode_{product.barcode}.png"
+        
         return success_response(
-            "Barcode fetched",
+            "Barcode URL retrieved",
             data={"barcode_url":barcode_url}
         )
         

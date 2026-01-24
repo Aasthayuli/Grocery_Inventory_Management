@@ -13,7 +13,6 @@ import {
   getCategories,
   getSuppliers,
 } from "../services/productService";
-import { generateBarcode } from "../services/barcodeService";
 
 export const AddProduct = () => {
   const navigate = useNavigate();
@@ -96,29 +95,6 @@ export const AddProduct = () => {
       [e.target.name]: e.target.value,
     });
     setError("");
-  };
-
-  const handleGenerateBarcode = async () => {
-    if (!isEditMode) {
-      setError("Save product first to generate barcode automatically.");
-      return;
-    }
-
-    try {
-      const response = await generateBarcode(id);
-      setFormData({
-        ...formData,
-        barcode: response.data.barcode,
-      });
-
-      setMsg("Barcode generated successfully!");
-      setShowModal(true);
-    } catch (err) {
-      setError(
-        "Failed to generate barcode: " +
-          (err.response?.data?.message || err.message),
-      );
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -377,32 +353,23 @@ export const AddProduct = () => {
             </div>
 
             {/* Barcode */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                Barcode (Optional)
-              </label>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <input
-                  type="text"
-                  name="barcode"
-                  value={formData.barcode}
-                  onChange={handleInputChange}
-                  className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
-                  placeholder="Auto-generated or enter manually"
-                />
-                {isEditMode && (
-                  <button
-                    type="button"
-                    onClick={handleGenerateBarcode}
-                    className="bg-gray-100 text-gray-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg hover:bg-gray-200 transition flex items-center justify-center space-x-2 text-sm sm:text-base"
-                  >
-                    <BarcodeIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span>Generate</span>
-                  </button>
-                )}
+            {!isEditMode && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                  Barcode (Optional)
+                </label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    name="barcode"
+                    value={formData.barcode}
+                    onChange={handleInputChange}
+                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
+                    placeholder="Auto-generated or enter manually"
+                  />
+                </div>
               </div>
-            </div>
-
+            )}
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
               <button
@@ -413,12 +380,12 @@ export const AddProduct = () => {
                 {loading ? (
                   <span>Saving...</span>
                 ) : (
-                  <>
+                  <div className="flex gap-1 px-2">
                     <Save className="h-4 w-4 sm:h-5 sm:w-5" />
                     <span>
                       {isEditMode ? "Update Product" : "Save Product"}
                     </span>
-                  </>
+                  </div>
                 )}
               </button>
               <button

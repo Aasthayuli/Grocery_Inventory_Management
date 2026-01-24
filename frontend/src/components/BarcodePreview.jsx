@@ -51,13 +51,13 @@ const BarcodePreview = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-sm text-red-600">{error}</p>
+        </div>
+      )}
       <div className="bg-white shadow rounded-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-600">{error}</p>
-          </div>
-        )}
         {/* Barcode Section */}
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-4">Product Barcode</h2>

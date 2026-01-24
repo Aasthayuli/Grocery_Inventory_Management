@@ -4,6 +4,7 @@ from sqlalchemy import text
 from flask_jwt_extended import JWTManager
 from config.database import db, init_db
 from config.logging_config import AppLogger
+from config.cloudinary_config import init_cloudinary
 from dotenv import load_dotenv
 import os
 
@@ -25,17 +26,19 @@ def create_app():
     app.logger.info("Starting Flask Application Initialization . . .")
 
     # Configuration from .env file
-    # example: mysql+pymysql://root:password123@localhost:5000/inventory_db -> Mysql connection string
+    # example: mysql+pymysql://root:password123@localhost:5000/inventory_db?ssl_ca=/etc/ssl/certs/ca-certificates.crt -> Mysql connection string
     try:
         app.config['SQLALCHEMY_DATABASE_URI'] = (
         f"mysql+pymysql://{os.getenv('DB_USER')}:"
         f"{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:"
         f"{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+        # "?ssl_ca=/etc/ssl/certs/ca-certificates.crt"  # SSH setup for Aiven 
         )
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #To avoid unnecessary overhead because we are not using SQLAlchemy event-based signals.
         app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
         app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
-        app.config['BARCODE_BASE_URL'] = os.getenv('BARCODE_BASE_URL')
+        app.config['IMAGE_STORAGE'] = os.getenv('IMAGE_STORAGE', 'local')
+        app.config['LOCAL_BARCODE_BASE_URL'] = os.getenv('LOCAL_BARCODE_BASE_URL')
 
         app.logger.info("Flask Application configuration loaded!")
         app.logger.info(f'Using Database: {os.getenv("DB_NAME")}')
@@ -46,10 +49,17 @@ def create_app():
         raise
 
 
+    allowed_origins = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        os.getenv('FRONTEND_URL','')
+    ]
+    allowed_origins= [origin for origin in allowed_origins]
+
     # Enable CORS(allowed frontend to access backend)
     CORS(app, resources={
         r"/api/*":{
-            "origins":["http://localhost:5173", "http://localhost:3000"], # 5173 for vite 
+            "origins":allowed_origins,
             "methods":["GET","POST","PUT", "DELETE", "OPTIONS"],
             "allow_headers":["Content-Type", "Authorization"]
         }
@@ -62,6 +72,14 @@ def create_app():
 
     #Initialize database
     init_db(app)  
+
+    # Initialize Cloudinary if cloud Storage
+    if app.config['IMAGE_STORAGE'] == 'cloud':
+        init_cloudinary()
+        app.config['CLOUD_BARCODE_BASE_URL'] = os.getenv('CLOUD_BARCODE_BASE_URL')
+        app.logger.info("Cloud Storage Mode enabled")
+    else:
+        app.logger.info("Local Storage Mode enabled")
 
     # Register blueprints(routes)
     from routes import auth_bp, product_bp, supplier_bp, transaction_bp, barcode_bp, category_bp
@@ -91,7 +109,8 @@ def create_app():
         return {
             'message': 'Inventory Management API',
             'status': 'running',
-            'version' : '1.0'
+            'version' : '1.0',
+            'Storage Mode':app.config['IMAGE_STORAGE']
         }
     
     @app.route("/api/health")

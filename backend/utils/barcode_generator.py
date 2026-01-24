@@ -7,6 +7,7 @@ import barcode
 from barcode.writer import ImageWriter
 import os
 import logging
+from io import BytesIO
 
 logger = logging.getLogger(__name__)
 
@@ -27,27 +28,23 @@ def generate_barcode(product_id, product_name=''):
 
     try:
         barcode_no = str(product_id).zfill(12)
-        logger.info(f'Generated barcode for product: {product_name}')
+        print(f'Generated barcode for product: {product_name}')
         return barcode_no
     except Exception as e:
         logger.error(f'Barcode generation failed for product {product_id} - {product_name} : {str(e)}')
         raise
 
-def save_barcode_image(barcode_no, output_dir='static/barcodes'):
+def save_barcode_image_local(barcode_no, output_dir='static/barcodes'):
     """
-    Save barcode as PNG images
+    Save barcode as PNG images Locally (DEVELOPMENT)
 
     Args:
         barcode_no: 12-digit barcode string
         output_dir: Directory to save barcode images
 
     Returns:
-        str: Path to saved image file
-        str: Actual barcode number
+        tuple: (image_path, actual_barcode_number)
 
-    Example:
-        path = save_barcode_image('000000000005')
-        saves to: 'static/barcodes/barcode_0000000000051.png (1 is checksum added)
     """
 
     try:
@@ -75,43 +72,108 @@ def save_barcode_image(barcode_no, output_dir='static/barcodes'):
         final_path = os.path.join(output_dir, f"barcode_{actual_barcode}.png")
         os.rename(saved_path, final_path)
 
-        logger.info(f'Barcode image saved at: {final_path} with Barcode number: {actual_barcode}')
+        logger.info(f'Barcode image saved locally at: {final_path} with Barcode number: {actual_barcode}')
 
         return final_path, actual_barcode
     except Exception as e:
-        logger.error(f'Failed to save barcode image: {str(e)}')
+        logger.error(f'Failed to save barcode image locally: {str(e)}')
         raise
 
-def generate_and_save_barcode(product_id, product_name=''):
+def save_barcode_image_cloud(barcode_no, upload_to_cloudinary):
     """
-    Combined Functions: Generate barcode image and save image
+    Save Barcode to Cloudinary (PRODUCTION)
+
+    Args: 
+       barcode_no : 12-digit barcode string
+       upload_to_cloudinary: Function to upload to cloudinary
+
+    Returns:
+        tuple: (cloudinary_url, actual_barcode_number)
+    """
+    try:
+        # get EAN-13 barcode class
+        EAN = barcode.get_barcode_class('ean13')
+        ean = EAN(barcode_no, writer= ImageWriter())
+
+        # get actual barcode number (13 digits)
+        actual_barcode = ean.get_fullcode()
+
+        # generate barcode in memory
+        buffer = BytesIO()
+        ean.write(buffer)
+        buffer.seek(0)
+
+        # save to temporary file for upload
+        temp_path = f"temp_barcode_{actual_barcode}.png"
+        with open(temp_path, 'wb') as f:
+            f.write(buffer.getvalue())
+        
+        # upload to cloudinary
+        cloudinary_result = upload_to_cloudinary(
+            file_path = temp_path,
+            public_id = f"barcode_{actual_barcode}",
+            folder= "grocery_barcodes"
+        )
+
+        # delete temporary file
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        
+        cloudinary_url = cloudinary_result['secure_url']
+        print(f'Barcode uploaded to Cloudinary: {cloudinary_url}')
+
+        return cloudinary_url, actual_barcode
+    except Exception as e:
+        logger.error(f'failed to save barcode to Cloudinary: {str(e)}')
+        raise
+
+def generate_and_save_barcode(product_id, product_name='', storage_mode='local', cloudinary_upload_fn=None):
+    """
+    Combined Functions: Generate barcode number and save image
 
     Args:
         product_id: Product ID
         product_name: Product name (for logging)
+        storage_mode: 'local' or 'cloud'
+        cloudinary_upload_fn: Cloudinary upload function (required if cloud)
     
     Returns:
-        dict: Barcode details
-    
-    Example:
-        result = generate_and_save_barcode(5, 'Milk')
+        dict: {
+            'barcode_number': str,
+            'image_path':str (local) or 'image_url': str(cloud)
+        }
     """
     try:
         # Generate barcode number
         barcode_number = generate_barcode(product_id, product_name)
         
-        # Save barcode image
-        image_path, actual_barcode = save_barcode_image(barcode_number)
+        # Local Storage (DEVELOPEMENT)
+        if storage_mode == 'local':
+            image_path, actual_barcode = save_barcode_image_local(barcode_number)
+            logger.info(f'Barcode saved locally: {product_name} - {actual_barcode}')
+            return {
+                'barcode_number':actual_barcode,
+                'image_url': image_path,
+                'storage_mode':'local'
+            }
         
-        logger.info(
-            f'Complete barcode generation: Product {product_id} ({product_name}) '
-            f'- Barcode: {actual_barcode}'
-        )
-        
-        return {
-            'barcode_number': actual_barcode,
-            'image_path': image_path
-        }
+        elif storage_mode == 'cloud':
+
+            if not cloudinary_upload_fn:
+                raise ValueError("Cloudinary upload function required for cloud storage")
+            
+            cloudinary_url, actual_barcode = save_barcode_image_cloud(
+                barcode_number, cloudinary_upload_fn)
+            
+            logger.info(f'Barcode saved to cloud: {product_name} - {actual_barcode}')
+
+            return {
+                'barcode_number': actual_barcode,
+                'image_url':cloudinary_url,
+                'storage':'cloud'
+            }
+        else:
+            raise ValueError(f"Invalid Storage Mode: {storage_mode}. Use 'local' or 'cloud'")
     
     except Exception as e:
         logger.error(f'Complete barcode generation failed: {str(e)}')
@@ -153,20 +215,3 @@ def validate_barcode(barcode_number):
         logger.error(f'Barcode validation error: {str(e)}')
         return False
 
-
-def get_barcode_image_path(barcode):
-    """
-    Get barcode image path for a product
-    
-    Args:
-        barcode: barcode number
-    
-    Returns:
-        str: Path to barcode image
-    
-    Example:
-        path = get_barcode_image_path(5)
-        # Returns: 'static/barcodes/product_5.png'
-    """
-    
-    return f'static/barcodes/barcode_{barcode}.png'

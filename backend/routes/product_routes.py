@@ -184,7 +184,6 @@ def insert_product():
             return error_response(f'Supplier not found', status_code=404)
 
         # parse expiry date if provided
-
         expiry_date = None
         if 'expiry_date' in data and data['expiry_date']:
             expiry_date = parse_date(data['expiry_date'])
@@ -209,12 +208,29 @@ def insert_product():
         # Generate barcode if not provided
         if not new_product.barcode:
             try:
-                barcode_info= generate_and_save_barcode(new_product.id, new_product.name)
+                from config.cloudinary_config import upload_to_cloudinary
+                storage_mode = current_app.config.get('IMAGE_STORAGE', 'local')
+
+                if storage_mode == 'cloud':
+                    barcode_info = generate_and_save_barcode(
+                        product_id=new_product.id,
+                        product_name=new_product.name,
+                        storage_mode='cloud',
+                        cloudinary_upload_fn=upload_to_cloudinary
+                    )
+                else:
+                    barcode_info= generate_and_save_barcode(
+                        product_id=new_product.id,
+                        product_name=new_product.name,
+                        storage_mode='local',
+                    )
+
                 new_product.barcode = barcode_info['barcode_number']
                 db.session.commit()
                 logger.info(f'Barcode generated for product: {new_product.name}')
+            
             except Exception as barcode_error:
-                logger.warning(f'Barcode generation failed: {str(barcode_error)}')
+                logger.error(f'Barcode generation failed: {str(barcode_error)}')
                 # continue without barcode non critical
 
         logger.info(
@@ -308,8 +324,6 @@ def update_product(product_id):
             else:
                 product.expiry_date = None
 
-        if 'barcode' in data:
-            product.barcode = data['barcode']
 
         product.updated_at = datetime.utcnow()
         db.session.commit()
@@ -361,11 +375,27 @@ def delete_product(product_id):
 
         product_name = product.name
         product_sku = product.sku
+        product_barcode = product.barcode
 
         db.session.delete(product)
         db.session.commit()
 
-        logger.warning(
+        # delete Barcode image
+        storage_mode = current_app.config.get('IMAGE_STORAGE', 'local')
+        import os
+        from config.cloudinary_config import delete_from_cloudinary
+        if storage_mode == 'local':
+            base_url = current_app.config.get('LOCAL_BARCODE_BASE_URL')
+            barcode_path = f"{base_url}static/barcodes/barcode_{product_barcode}.png"
+            if os.path.exists(barcode_path):
+                os.remove(barcode_path)
+        else:
+            # cloud mode
+            result = delete_from_cloudinary(product_barcode)
+            if result.get("result") != "ok":
+                logger.error(f"Cloudinary Image delete failed: {result}")
+
+        logger.info(
             f'Product deleted: {product_name} (SKU: {product_sku}, ID: {product_id})'
             f'by user {current_user.username}'
         )

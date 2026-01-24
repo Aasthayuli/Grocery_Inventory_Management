@@ -6,27 +6,6 @@
 import api, { getErrorMessage } from "./api";
 
 /**
- * Generate Barcode for a product
- * @param {number} productId: product ID
- * @returns {Promise} - barcode details with Image path
- */
-export const generateBarcode = async (productId) => {
-  try {
-    const response = await api.post(`/api/barcode/generate/${productId}`);
-    if (!response) {
-      throw new Error("No response received from server");
-    }
-    if (!response.data.success) {
-      throw new Error(response.data?.message || "Barcode generation failed");
-    }
-
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
  * Search product by barcode
  * @param {String} barcodeNumber - Barcode Number
  * @returns {Promise} - Product Details
@@ -92,9 +71,7 @@ export const formatBarcode = (barcode) => {
 };
 
 export default {
-  generateBarcode,
   searchByBarcode,
   getBarcodeImageUrl,
-
   formatBarcode,
 };
