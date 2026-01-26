@@ -16,6 +16,12 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    fetch(import.meta.env.VITE_API_URL + "/api/health")
+      .then(() => console.log("Backend warmed up"))
+      .catch(() => {});
+  }, []);
+
   // Form data
   const [formData, setFormData] = useState({
     username: "",
