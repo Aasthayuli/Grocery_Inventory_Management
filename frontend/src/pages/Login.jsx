@@ -3,7 +3,7 @@
  * User authentication with login and register forms
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogIn, UserPlus, ShoppingCart, Eye, EyeOff } from "lucide-react";
 import { login, register } from "../services/authService";
