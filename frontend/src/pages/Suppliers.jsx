@@ -1,8 +1,3 @@
-/**
- * Suppliers Page
- * Manage suppliers with CRUD operations
- */
-
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, X, Save, Users } from "lucide-react";
 import api from "../services/api";

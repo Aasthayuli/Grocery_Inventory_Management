@@ -1,37 +1,25 @@
-"""
-Barcode Routes
-Generate, search, and manage product barcodes
-"""
-
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app
 from flask_jwt_extended import jwt_required
 
-from config.database import db
 from config.logging_config import AppLogger
-from config.cloudinary_config import upload_to_cloudinary
 from models import Product
 from utils import (
         success_response,
         error_response,
-        generate_and_save_barcode,
         validate_barcode,
 )
 
 
 # create blueprint
 barcode_bp = Blueprint('barcode', __name__, url_prefix='/api/barcode')
-logger = AppLogger.get_barcode_logger()
+
+logger = AppLogger.get_logger(__name__)
 
 @barcode_bp.route('/search/<barcode_number>', methods=['GET'])
 @jwt_required()
 def search_by_barcode(barcode_number):
     """
     Search product via Barcode number
-
-    Returns:
-        200: product found
-        400: Validation Error
-        404: Product not found
     """
     try:
         # validate barcode format
@@ -53,7 +41,6 @@ def search_by_barcode(barcode_number):
         )
     except Exception as e:
         logger.error(f'Error in Product search via barcode: {str(e)}')
-        current_app.logger.error(f'Error in Product search via barcode: {str(e)}')
         return error_response('Barcode search failed', status_code= 500)
 
 @barcode_bp.route('/image/<int:product_id>', methods= ['GET'])
@@ -61,10 +48,6 @@ def search_by_barcode(barcode_number):
 def get_barcode_image_url(product_id):
     """
     Get barcode image file URL for a product
-
-    Returns:
-    200: Product found      
-    404: Product not found
     """
     try:
         product = Product.query.get(product_id)
@@ -93,7 +76,6 @@ def get_barcode_image_url(product_id):
         
     except Exception as e:
         logger.error(f'Error in getting Barcode image URL: {str(e)}')
-        current_app.logger.error(f'Error in getting Barcode image URL: {str(e)}')
         return error_response('Failed to retrieve barcode image URL', status_code= 500)
 
 

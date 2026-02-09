@@ -1,9 +1,4 @@
-"""
-Supplier Routes
-CRUD operations for suppliers
-"""
-
-from flask import request, Blueprint, current_app
+from flask import request, Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from config.database import db
 from config.logging_config import AppLogger
@@ -19,7 +14,8 @@ from utils import (
 # create Blueprint
 supplier_bp = Blueprint('suppliers', __name__, url_prefix='/api/suppliers')
 
-logger = AppLogger.get_supplier_logger()
+
+logger = AppLogger.get_logger(__name__)
 
 
 @supplier_bp.route('', methods=['GET'])
@@ -32,9 +28,6 @@ def get_all_suppliers():
             page: Page number (default: 10)
             per_page: Items per page (default: 10)
             search: Search in supplier name
-
-    Returns:
-        200: List of suppliers
     """
     try:
         page = request.args.get('page', 1, type=int)
@@ -74,7 +67,6 @@ def get_all_suppliers():
         )
     except Exception as e:
         logger.error(f'Error in getting all suppliers: {str(e)}')
-        current_app.logger.error(f'Error in getting all suppliers: {str(e)}')
         return error_response(f'Failed to get all suppliers!', status_code= 500)
 
 @supplier_bp.route('', methods=['POST'])
@@ -91,9 +83,6 @@ def create_supplier():
         "created_at": (optional)
         }
 
-    Returns:
-        201: Supplier created
-        400: Validation error
     """
     try:
         data = request.get_json()
@@ -129,7 +118,6 @@ def create_supplier():
     except Exception as e:
         db.session.rollback()
         logger.error(f'Supplier Creation error: {str(e)}')
-        current_app.logger.error(f'Supplier Creation error: {str(e)}')
         return error_response(f'Failed to create supplier', status_code= 500)
 
 
@@ -142,10 +130,6 @@ def update_supplier(supplier_id):
     Args:
         supplier_id: Supplier to be updated
 
-    Returns:
-        200: Supplier Updated
-        400: Validation Error
-        404: Supplier not found
     """
     try:
         supplier = Supplier.query.get(supplier_id)
@@ -185,7 +169,6 @@ def update_supplier(supplier_id):
 
     except Exception as e:
         logger.error(f'Error in Updating Supplier: {str(e)}')
-        current_app.logger.error(f'Error in Updating Supplier: {str(e)}')
         return error_response(f'Failed to update Supplier!', status_code= 500)
 
 @supplier_bp.route('/<int:supplier_id>', methods=['DELETE'])
@@ -194,15 +177,10 @@ def delete_supplier(supplier_id):
     """
     Delete particular Supplier (Admin only)
 
-    Note: This will also delete all products from this supplier (cascade)
+    This will also delete all products from this supplier (cascade)
 
     Args:
         supplier_id: Supplier to be deleted
-
-    Returns:
-        201: Supplier deleted
-        403: Unauthorized attempt to delete
-        404: Supplier not found
     """
     try:
         # check if admin
@@ -240,6 +218,5 @@ def delete_supplier(supplier_id):
     except Exception as e:
         db.session.rollback()
         logger.error(f'Error in deleting Supplier: {str(e)}')
-        current_app.logger.error(f'Error in deleting Supplier: {str(e)}')
         return error_response('Failed to delete supplier', status_code= 500)
 

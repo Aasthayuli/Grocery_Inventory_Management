@@ -1,15 +1,10 @@
-"""
-Barcode generator Utility
-Generates EAN-13 barcodes for products
-"""
-
 import barcode
 from barcode.writer import ImageWriter
 import os
-import logging
 from io import BytesIO
+from config.logging_config import AppLogger
 
-logger = logging.getLogger(__name__)
+logger = AppLogger.get_logger(__name__)
 
 def generate_barcode(product_id, product_name=''):
     """
@@ -20,10 +15,6 @@ def generate_barcode(product_id, product_name=''):
         product_name: Product name (for filename)
     Returns:
         str: Barcode number (13 digits)
-    
-    Example:
-        barcode_number = generate_barcode(5, 'Milk')
-        Returns : '0000000000050'
     """
 
     try:
@@ -51,7 +42,6 @@ def save_barcode_image_local(barcode_no, output_dir='static/barcodes'):
         # create output directory if not exists
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-            logger.info(f'Created barcode directory: {output_dir}')
 
         # returns a python class(blueprint) for EAN-13 barcode
         EAN = barcode.get_barcode_class('ean13')
@@ -185,13 +175,7 @@ def validate_barcode(barcode_number):
     
     Args:
         barcode_number: Barcode string to validate
-    
-    Returns:
-        bool: True if valid, False otherwise
-    
-    Example:
-        is_valid = validate_barcode('0000000000050')
-        # Returns: True (12 digits + checksum = 13)
+
     """
     try:
         # Check if string

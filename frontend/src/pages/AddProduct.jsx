@@ -1,8 +1,3 @@
-/**
- * Add/Edit Product Page
- * Create new product or update existing product
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { X, ArrowLeft, Save, Barcode as BarcodeIcon } from "lucide-react";

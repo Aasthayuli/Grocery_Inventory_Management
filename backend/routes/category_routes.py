@@ -1,9 +1,4 @@
-"""
-Category Routes
-CRUD Operations for product categories
-"""
-
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from config.database import db
 from config.logging_config import AppLogger
@@ -16,16 +11,14 @@ from utils import(
 
 # create Blueprint
 category_bp = Blueprint('categories', __name__, url_prefix='/api/categories')
-logger = AppLogger.get_category_logger()
+
+logger = AppLogger.get_logger(__name__)
 
 @category_bp.route('', methods=['GET'])
 @jwt_required()
 def get_all_categories():
     """
     get all categories
-
-    Returns:
-        200: List of categories with product counts
     """
     try:
         categories = Category.query.order_by(Category.name.asc()).all()
@@ -36,7 +29,6 @@ def get_all_categories():
         return success_response('Categories fetched successfully', data=categories_data)
     except Exception as e:
         logger.error(f'Get categories error: {str(e)}')
-        current_app.logger.error(f'Get categories error: {str(e)}')
         return error_response('Failed to fetch categories', status_code=500)
 
 @category_bp.route('', methods=['POST'])
@@ -50,10 +42,6 @@ def create_category():
             "name": "Dairy",
             "description": "Milk and milk products"
         }
-
-    Returns:
-        201: category created
-        400: Validation error
     """
     try:
         data = request.get_json()
@@ -83,7 +71,6 @@ def create_category():
     except Exception as e:
         db.session.rollback()
         logger.error(f'Error in creating category: {str(e)}')
-        current_app.logger.error(f'Error in creating category: {str(e)}')
         return error_response(f'Failed to create category', status_code= 500)
 
 @category_bp.route('/<int:category_id>', methods=['PUT'])
@@ -107,14 +94,6 @@ def update_category(category_id):
 def delete_category(category_id):
     """
     Delete Category
-
-    Args:
-        category_id:
-
-    Returns:
-        200: Category deleted
-        403: Not Admin
-        404: Category not found
     """
     try:
 
@@ -137,6 +116,7 @@ def delete_category(category_id):
 
         if product_count > 0:
             logger.warning(f'Deleting category with {product_count} products: {category_name}')
+            pass
 
         db.session.delete(category)
         db.session.commit()
@@ -148,7 +128,6 @@ def delete_category(category_id):
     except Exception as e:
         db.session.rollback()
         logger.error(f'Error while deleting category: {str(e)}')
-        current_app.logger.error(f'Error while deleting category: {str(e)}')
         return error_response(f'Failed to delete Category', status_code= 500)
 
 

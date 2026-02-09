@@ -1,9 +1,3 @@
-/**
- * ProtectedRoute Component
- * Protects routes from unauthorized access
- * Redirects to login if user is not authenticated
- */
-
 import { Navigate } from "react-router-dom";
 import { isAuthenticated, getCurrentUser } from "../services/authService";
 

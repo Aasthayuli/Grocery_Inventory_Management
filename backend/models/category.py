@@ -1,13 +1,4 @@
-"""
-Category Model
-Organizes products into different categories
-Example : Dairy, Beverages, Snacks, etc.
-
-"""
-import logging
 from config.database import db
-
-logger = logging.getLogger(__name__)
 
 class Category(db.Model):
     """
@@ -38,9 +29,3 @@ class Category(db.Model):
             'description' : self.description if self.description else None,
             'product_count' : len(self.products)  # total products in this category
         }
-
-    def __repr__(self):
-        """
-        String representation of category for debugging
-        """
-        return f'<Category {self.name}>'

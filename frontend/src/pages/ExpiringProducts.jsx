@@ -1,8 +1,3 @@
-/**
- * Expiring Products Page
- * Shows products expiring soon with color-coded alerts
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle, Calendar, Package } from "lucide-react";

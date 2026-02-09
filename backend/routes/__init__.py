@@ -1,7 +1,3 @@
-"""
-Routes Package Initialization
-All API blueprints for the application
-"""
 
 from .auth_routes import auth_bp
 from .product_routes import product_bp

@@ -1,8 +1,3 @@
-/**
- * Dashboard Page
- * Main Overview with Statistics and recent Activity
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {

@@ -1,8 +1,3 @@
-/**
- * Navbar Component
- * Top navigation bar with user info and logout
- */
-
 import { LogOut, Bell, User, ShoppingCart } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import {

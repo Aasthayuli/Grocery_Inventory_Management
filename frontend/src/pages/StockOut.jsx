@@ -1,8 +1,3 @@
-/**
- * Stock OUT Page
- * Remove stock from inventory (Sale to customer)
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {

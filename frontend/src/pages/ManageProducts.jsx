@@ -1,8 +1,3 @@
-/**
- * Manage Products page
- * List all products with search, filter, pagination and actions
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {

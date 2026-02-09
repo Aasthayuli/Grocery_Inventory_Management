@@ -1,8 +1,3 @@
-"""
-Server Startup Script
-Runs the Flask application with configuration from environment variables
-"""
-
 from app import app
 import os
 

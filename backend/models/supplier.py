@@ -1,13 +1,6 @@
-"""
-Supplier Model 
-manages supplier information for inventory procurement
-Example: Amul, mother dairy, Local Vendors, etc.
-"""
-import logging
+
 from config.database import db
 from datetime import datetime
-
-logger = logging.getLogger(__name__)
 
 class Supplier(db.Model):
     """
@@ -32,7 +25,6 @@ class Supplier(db.Model):
     def to_dict(self):
         """
         convert supplier object to dictionary to send as JSON response
-        Includes product count for analytics
         """
         return {
             'id' : self.id,
@@ -43,9 +35,3 @@ class Supplier(db.Model):
             'created_at' : self.created_at if self.created_at else None,
             'product_count' : len(self.products)   # total products from this supplier
         }
-    
-    def __repr__(self):
-        """
-        String representation for debugging
-        """
-        return f'<Supplier: {self.name}>'

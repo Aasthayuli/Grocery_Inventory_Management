@@ -1,12 +1,6 @@
-"""
-Product Model
-Core inventory item with expiry tracking and barcode support
-"""
-import logging
 from config.database import db
-from datetime import datetime, timedelta
+from datetime import datetime
 
-logger = logging.getLogger(__name__)
 
 class Product(db.Model):
     """
@@ -36,24 +30,17 @@ class Product(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
-    # 'category' backref comes from Category model
-    # 'supplier' backref comes from Suppliers model
-
     transactions = db.relationship('Transaction', backref='product', lazy = True, cascade='all, delete-orphan')
 
     def is_expired(self):
         """
         Checks if product has expired
 
-        Returns: True if expired, False otherwise
         """
         if not self.expiry_date:
             return False   # No expiry date means non perishable
         
         is_exp = self.expiry_date < datetime.now().date()
-
-        if is_exp:
-            logger.warning(f'Product Expired : {self.name} (ID: {self.id}) - Expiry: {self.expiry_date}')
 
         return is_exp
     
@@ -73,7 +60,7 @@ class Product(db.Model):
 
         # Log warning for product expiring within 1 week ... 
         if 0 < delta <= 7:
-            logger.warning(f'Product expiring soon: {self.name} - {delta} days remaining')
+            pass
 
         return delta
     
@@ -83,12 +70,11 @@ class Product(db.Model):
         
         Args:
             - threshold : Minimum quantity required(default = 10)
-        Returns: True if stock is low, False otherwise
         """
 
         is_low = self.quantity <= threshold
         if is_low:
-            logger.warning(f'Low stock alert: {self.name} (ID: {self.id}) - Only {self.quantity} units remaining')
+            pass
 
         return is_low
     
@@ -131,9 +117,3 @@ class Product(db.Model):
             
         return base_dict
     
-    def __repr__(self):
-        """
-        String representation for debugging
-        """
-
-        return f'<Product {self.name} (Stock keeping Unit: {self.sku}, Stock: {self.quantity})>'

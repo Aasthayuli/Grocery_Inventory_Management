@@ -1,19 +1,9 @@
-"""
-Transaction Model
-Tracks all movement (IN/OUT) for inventory audit trail
-Essential for reconcilation and reporting
-"""
-import logging
 from config.database import db
 from datetime import datetime
-
-
-logger = logging.getLogger(__name__)
 
 class Transaction(db.Model):
     """
     Transaction table - Records all inventory movement
-    - provides complete audit trail for stock changes
     
     """
     __tablename__ = 'transactions'
@@ -78,7 +68,6 @@ class Transaction(db.Model):
             Transaction Object
         """
         if quantity <= 0:
-            logger.error(f'Invalid STOCK IN quantity: {quantity} for product: {product.name}')
             raise ValueError("Added Quantity must be positive for STOCK IN")
 
         transaction = Transaction(
@@ -90,14 +79,7 @@ class Transaction(db.Model):
         )
 
         # update product quantity
-        old_quantity = product.quantity
         product.quantity += quantity
-
-        logger.info(
-            f'STOCK IN | Product: {product.name} (ID: {product.id}) | '
-            f'Qty: +{quantity} | Stock: {old_quantity} -> {product.quantity} | '
-            f'User: {user.username}'
-        )
 
         return transaction
 
@@ -116,14 +98,9 @@ class Transaction(db.Model):
             ValueError: If insufficient stock
         """
         if quantity <= 0:
-            logger.error(f'Invalid STOCK OUT quantity: {quantity} for product {product.name}')
             raise ValueError("Quantity must be positive for STOCK OUT")
         
         if product.quantity < quantity:
-            logger.error(
-                f'Insufficient stock for {product.name}: '
-                f'Requested: {quantity}, Available: {product.quantity}'
-            )
             raise ValueError(f"Insufficient stock. Available: {product.quantity}, Requested: {quantity}")
         
         transaction = Transaction(
@@ -135,27 +112,11 @@ class Transaction(db.Model):
         )
         
         # Update product quantity
-        old_quantity = product.quantity
         product.quantity -= quantity
-        
-        logger.info(
-            f'STOCK OUT | Product: {product.name} (ID: {product.id}) | '
-            f'Qty: -{quantity} | Stock: {old_quantity} -> {product.quantity} | '
-            f'User: {user.username}'
-        )
         
         # Check for low stock
         if product.quantity <= 10:
-            logger.warning(
-                f'LOW STOCK ALERT | Product: {product.name} | '
-                f'Remaining: {product.quantity} units'
-            )
+            pass
         
         return transaction
     
-    
-    def __repr__(self):
-        """
-        String representation for debugging
-        """
-        return f'<Transaction {self.type} {self.quantity} units (Product ID: {self.product_id})>'

@@ -1,8 +1,3 @@
-/**
- * Stock IN Page
- * Add stock to inventory (Purchase from supplier)
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { TrendingUp, Search, Plus, ArrowLeft, Package } from "lucide-react";

@@ -1,8 +1,3 @@
-"""
-Product Routes
-CRUD operations for products with filtering, searching, and expiry tracking
-"""
-
 from flask import Blueprint, request, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from config.database import db
@@ -20,7 +15,9 @@ from datetime import datetime, timedelta
 
 
 product_bp = Blueprint('products', __name__, url_prefix= '/api/products')
-logger = AppLogger.get_product_logger()
+
+
+logger = AppLogger.get_logger(__name__)
 
 @product_bp.route('',methods=['GET'])
 @jwt_required()
@@ -89,7 +86,7 @@ def get_all_products():
         # Include relations in response
         products_data = [p.to_dict(include_relations=True) for p in result['items']]
 
-        logger.info(f'Products fetched: Page: {page}, total: {result["total"]}')
+        # logger.info(f'Products fetched: Page: {page}, total: {result["total"]}')
 
         return success_response(
             'Products retrieved successfully!',
@@ -107,7 +104,6 @@ def get_all_products():
         )
     except Exception as e:
         logger.error(f'Get products error: {str(e)}')
-        current_app.logger.error(f'Get products error: {str(e)}')
         return error_response('Failed to fetch products', status_code=500)
 
 @product_bp.route('/<int:product_id>', methods=['GET'])
@@ -115,10 +111,6 @@ def get_all_products():
 def get_product(product_id):
     """
         Get single product by Product ID
-
-    Returns:
-        200: Product details
-        404: Product not found
     """
     try:
         product = Product.query.get(product_id)
@@ -135,7 +127,6 @@ def get_product(product_id):
         )
     except Exception as e:
         logger.error(f'get single product error: {str(e)}')
-        current_app.logger.error(f'get single product error: {str(e)}')
         return error_response(f'Failed to fetch product!', status_code= 500)
 
 @product_bp.route('', methods=['POST'])
@@ -154,9 +145,6 @@ def insert_product():
         "expiry_date":"2026-01-31" (optional),
         "barcode":"123456789012" (optional, auto generated if not provided)
     }
-    Returns:
-        201: product inserted successfully
-        400: validation error
     """
     try:
         data = request.get_json()
@@ -246,7 +234,6 @@ def insert_product():
     except Exception as e:
         db.session.rollback()
         logger.error(f'Product creation error {str(e)}')
-        current_app.logger.error(f'Product creation error {str(e)}')
         return error_response('Product insertion failed!', status_code=500)
 
 @product_bp.route('/<int:product_id>', methods=['PUT'])
@@ -254,9 +241,6 @@ def insert_product():
 def update_product(product_id):
     """
     Update existing product
-
-    Args:
-        product_id: Product ID whose product is to be updated
 
     Request body: {
         "name":"milk",
@@ -268,10 +252,6 @@ def update_product(product_id):
         "created_at":(optional),
         "expiry_date": (optional)
 
-    Returns:
-        201: Product update
-        404: Product not found
-        400: Validation error
     """
     try:
         product = Product.query.get(product_id)
@@ -337,7 +317,6 @@ def update_product(product_id):
     except Exception as e:
         db.session.rollback()
         logger.error(f'Product update error: str{e}')
-        current_app.logger.error(f'Product update error: str{e}')
         return error_response(f'Failed to update product', status_code= 500)
 
 @product_bp.route('/<int:product_id>', methods=['DELETE'])
@@ -346,13 +325,6 @@ def delete_product(product_id):
     """
     Delete Product( Admin Only)
 
-    Args:
-        product_id: product to be deleted
-
-    Returns:
-        201: Successful deletion
-        403: Unauthorized access (not admin)
-        404: product Not found
     """
     try:
 
@@ -404,7 +376,6 @@ def delete_product(product_id):
     except Exception as e:
         db.session.rollback()
         logger.error(f'Product delete error: {str(e)}')
-        current_app.logger.error(f'Product delete error: {str(e)}')
         return error_response(f'Failed to delete Product!', status_code= 500)
 
 @product_bp.route('/expiring', methods=['GET'])
@@ -415,9 +386,6 @@ def get_expiring_products():
 
     Query parameters:
         days: Days threshold ( Default 7 days)
-
-    Returns:
-        200: List of expiring products
     """
     try:
         days = request.args.get('days', 7, type=int)
@@ -439,7 +407,6 @@ def get_expiring_products():
         )
     except Exception as e:
         logger.error(f'Error in getting Expiring products: {str(e)}')
-        current_app.logger.error(f'Error in getting Expiring products: {str(e)}')
         return error_response(f'Failed to fetch expiring products', status_code= 500)
 
 @product_bp.route('/expired', methods=['GET'])
@@ -447,9 +414,6 @@ def get_expiring_products():
 def get_all_expired():
     """
     Get expired products
-
-    Returns:
-        200: List of expired products
     """
     try:
 
@@ -468,7 +432,6 @@ def get_all_expired():
         )
     except Exception as e:
         logger.error(f'Error in getting Expired products: {str(e)}')
-        current_app.logger.error(f'Error in getting Expired products: {str(e)}')
         return error_response(f'Failed to fetch Expired products', status_code= 500)
 
 
@@ -480,9 +443,6 @@ def get_low_stock_products():
 
     Query parameters:
         threshold: stock threshold (default: 10)
-
-    Returns:
-        200: List of low stock products
     """
     try:
         threshold = request.args.get('threshold', 10, type=int)
@@ -498,7 +458,6 @@ def get_low_stock_products():
 
     except Exception as e:
         logger.error(f'Error in fetching low stock products: {str(e)}')
-        current_app.logger.error(f'Error in fetching low stock products: {str(e)}')
         return error_response(f'Failed to fetch low stock products', status_code= 500)
 
 

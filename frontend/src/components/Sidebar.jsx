@@ -1,8 +1,3 @@
-/**
- * Sidebar Component
- * Side navigation menu with active link highlighting
- */
-
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -149,7 +144,7 @@ const Sidebar = () => {
 
           {/* Navigation Links */}
           <nav className="flex-1 overflow-y-auto py-4">
-            <ul className="space-y-2 px-4">
+            <ul className="space-y-2">
               {filteredMenuItems.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -162,7 +157,7 @@ const Sidebar = () => {
                         }
                       }}
                       className={({ isActive }) =>
-                        `flex items-center px-4 py-3 rounded-lg transition-all relative group ${
+                        `flex items-center px-4 py-3 transition-all relative group ${
                           isActive
                             ? "bg-green-700 text-white"
                             : "text-gray-300 hover:bg-gray-700 hover:text-white"
@@ -191,7 +186,7 @@ const Sidebar = () => {
           {/* Footer - User Role Badge */}
           {!isCollapsed && (
             <div className="p-4 border-t border-gray-700">
-              <div className="bg-gray-700 px-3 py-2 rounded-lg">
+              <div className="bg-gray-700 px-3 py-2 ">
                 <p className="text-xs text-gray-400">Logged in as</p>
                 <p className="text-sm font-medium capitalize">
                   {userIsAdmin ? "👑 Admin" : "👤 Staff"}

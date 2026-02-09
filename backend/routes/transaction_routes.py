@@ -1,9 +1,4 @@
-"""
-Transaction Routes
-Stock IN/OUT operations with audit trail logging
-"""
-
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from config.database import db
 from config.logging_config import AppLogger
@@ -18,7 +13,8 @@ from datetime import datetime, timedelta
 
 # create Blueprint
 transaction_bp = Blueprint('transaction', __name__, url_prefix='/api/transactions')
-logger = AppLogger.get_transaction_logger()
+
+logger = AppLogger.get_logger(__name__)
 
 @transaction_bp.route('', methods=['GET'])
 @jwt_required()
@@ -94,7 +90,6 @@ def get_all_transactions():
         )
     except Exception as e:
         logger.error(f'Error in getting transactions: {str(e)}')
-        current_app.logger.error(f'Error in getting transactions: {str(e)}')
         return error_response(f'Failed to fetch transactions', status_code=500)
 
 
@@ -109,10 +104,6 @@ def stock_in():
         "quantity": 100,
         "notes":"Purchased from supplier" (optional)
     }
-    Returns:
-        201: Stock IN successful
-        400: Validation error
-        404: Product not found
     """
     try:
         data = request.get_json()
@@ -166,7 +157,6 @@ def stock_in():
     except Exception as e:
         db.session.rollback()
         logger.error(f'Error in StockIN: {str(e)}')
-        current_app.logger.error(f'Error in StockIN: {str(e)}')
         return error_response('Stock In failed', status_code= 500)
 
 @transaction_bp.route('/stock-out', methods=['POST'])
@@ -180,10 +170,6 @@ def stock_out():
         "quantity": 10,
         "notes", "sold to customer XYZ" (optional)
         }
-    Returns:
-        201: Stock OUT successful
-        400: Validation error or insufficient stock
-        404: Product not found
     """
     try:
         data = request.get_json()
@@ -246,7 +232,6 @@ def stock_out():
     except Exception as e:
         db.session.rollback()
         logger.error(f'Stock OUT error: {str(e)}')
-        current_app.logger.error(f'Stock OUT error: {str(e)}')
         return error_response('Stock out Failed', status_code= 500)
 
 @transaction_bp.route('/stats', methods=['GET'])
@@ -258,9 +243,6 @@ def get_transaction_stats():
     Query Parameters:
         from_date: Start date (YYYY-MM-DD)
         to_date: End date (YYYY-MM-DD)
-
-    Returns:
-        200: Transaction Statistics
     """
     try:
         # Date range (Default last 30 days)
@@ -305,7 +287,6 @@ def get_transaction_stats():
 
     except Exception as e:
         logger.error(f'Error in Transaction stats: {str(e)}')
-        current_app.logger.error(f'Error in Transaction stats: {str(e)}')
         return error_response('Failed to fetch transaction stats', status_code= 500)
 
 
