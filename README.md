@@ -7,13 +7,13 @@ The application supports authentication, inventory handling, barcode generation,
 
 ## 🚀 Live URLs
 
-### Frontend (Netlify)
+<!--### Frontend (Netlify)
 
 https://grocery-inventory-management-1289.netlify.app
 
 ### Backend (Render)
 
-https://grocery-inventory-management-cw3w.onrender.com
+https://grocery-inventory-management-cw3w.onrender.com -->
 
 ### Watch Video
 
@@ -52,9 +52,8 @@ https://grocery-inventory-management-cw3w.onrender.com
 - Flask
 - Flask-JWT-Extended
 - SQLAlchemy
-- MySQL (Aiven)
+- MySQL 
 - Cloudinary
-- Render Deployment
 
 ---
 
@@ -104,18 +103,17 @@ VITE_REFRESH_TOKEN_KEY=grocery_refresh_token
 
 ---
 
-## 🔐 Database Configuration
+<!--## 🔐 Database Configuration
 
 Used connection format:
 
 - mysql+pymysql://USER:PASSWORD@HOST:PORT/DB_NAME?ssl_ca=path/to/ca.pem
 - ⚠️ Note: Aiven MySQL requires SSL connection.  
-  The `ca.pem` certificate is mandatory for local development and should NOT be pushed to GitHub.
+  The `ca.pem` certificate is mandatory for local development and should NOT be pushed to GitHub.-->
 
 ## Security
 
 - JWT Authentication
-- SSL secured DB
 - Environment variable based config
 - CORS enabled
 - Cloudinary image handling
@@ -126,4 +124,4 @@ Aasthayui
 
 Final Year B.Tech Student
 
-Aspiring Full Stack Developer
+Aspiring Software Developer
