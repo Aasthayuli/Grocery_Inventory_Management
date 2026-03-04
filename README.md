@@ -13,6 +13,8 @@ https://grocery-inventory-management-1289.netlify.app
 
 ### Backend (Render)
 
+<!-- https://grocery-inventory-management-cw3w.onrender.com -->
+
 ### Watch Video
 
 [Working Demo](https://drive.google.com/file/d/14-XF73ND3rVsi6zF3YFcZdlY39X27K0b/view?usp=sharing)
@@ -50,9 +52,8 @@ https://grocery-inventory-management-1289.netlify.app
 - Flask
 - Flask-JWT-Extended
 - SQLAlchemy
-- MySQL (Aiven)
+- MySQL
 - Cloudinary
-- Render Deployment
 
 ---
 
@@ -86,14 +87,14 @@ JWT_SECRET_KEY=your_jwt_secret
 IMAGE_STORAGE=cloud
 CLOUD_BARCODE_BASE_URL=your_cloudinary_url
 
-FRONTEND_URL=https://grocery-inventory-management-1289.netlify.app
+FRONTEND_URL=frontend_url
 ```
 
 ### Frontend (.env)
 
 ```env
 # Backend API Base URL
-VITE_API_URL=https://grocery-inventory-management-cw3w.onrender.com
+VITE_API_URL=your_backend_url
 
 # JWT Token Storage Key
 VITE_TOKEN_KEY=grocery_auth_token
