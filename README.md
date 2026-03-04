@@ -13,8 +13,6 @@ https://grocery-inventory-management-1289.netlify.app
 
 ### Backend (Render)
 
-https://grocery-inventory-management-cw3w.onrender.com
-
 ### Watch Video
 
 [Working Demo](https://drive.google.com/file/d/14-XF73ND3rVsi6zF3YFcZdlY39X27K0b/view?usp=sharing)
@@ -76,11 +74,11 @@ https://grocery-inventory-management-cw3w.onrender.com
 ### Backend (.env)
 
 ```env
-DB_USER=avnadmin
+DB_USER=your_username
 DB_PASSWORD=your_password
 DB_HOST=your_host
 DB_PORT=your_port
-DB_NAME=defaultdb
+DB_NAME=your_db
 
 SECRET_KEY=your_secret_key
 JWT_SECRET_KEY=your_jwt_secret
@@ -104,18 +102,9 @@ VITE_REFRESH_TOKEN_KEY=grocery_refresh_token
 
 ---
 
-## 🔐 Database Configuration
-
-Used connection format:
-
-- mysql+pymysql://USER:PASSWORD@HOST:PORT/DB_NAME?ssl_ca=path/to/ca.pem
-- ⚠️ Note: Aiven MySQL requires SSL connection.  
-  The `ca.pem` certificate is mandatory for local development and should NOT be pushed to GitHub.
-
 ## Security
 
 - JWT Authentication
-- SSL secured DB
 - Environment variable based config
 - CORS enabled
 - Cloudinary image handling
@@ -125,5 +114,3 @@ Used connection format:
 Aasthayui
 
 Final Year B.Tech Student
-
-Aspiring Full Stack Developer
