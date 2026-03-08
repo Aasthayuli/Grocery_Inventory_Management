@@ -72,7 +72,7 @@ const ExpiringProducts = () => {
     <div className="min-h-screen bg-gray-200 p-4 sm:p-6 lg:px-14 py-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-4 sm:mb-6">
+        <div className="mb-4 sm:mb-6 text-center">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
             Expiring Products
           </h1>

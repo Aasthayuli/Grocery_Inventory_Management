@@ -11,27 +11,12 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { isAdmin } from "../services/authService";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const userIsAdmin = isAdmin();
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setIsCollapsed(false);
-      } else {
-        setIsCollapsed(true);
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const menuItems = [
     {
@@ -91,13 +76,16 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile toggle button */}
-      <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-green-600 text-white rounded-lg shadow-lg"
-      >
-        {isCollapsed ? <Menu className="h-5 w-5" /> : <X className="h-5 w-5" />}
-      </button>
+      {isCollapsed ? (
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="fixed top-3 left-4 z-50 p-2 bg-green-600 text-white rounded-lg shadow-lg"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+      ) : (
+        <div className="h-5 w-5"></div>
+      )}
 
       {/* Overlay for mobile */}
       {!isCollapsed && (
@@ -110,7 +98,7 @@ const Sidebar = () => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 h-screen bg-gray-800 text-white transition-all duration-300 z-50
+          fixed top-0 left-0 h-screen bg-gray-800 text-white transition-all duration-300 z-40
           ${
             isCollapsed
               ? "-translate-x-full lg:translate-x-0 lg:w-20"
@@ -124,7 +112,7 @@ const Sidebar = () => {
             {!isCollapsed ? (
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-3">
-                  <Package className="h-8 w-8 text-green-400" />
+                  <Package className="h-8 w-8 text-green-600" />
                   <div>
                     <h2 className="text-xl font-bold">Inventory</h2>
                     <p className="text-sm text-gray-400">Management</p>
@@ -132,13 +120,13 @@ const Sidebar = () => {
                 </div>
                 <button
                   onClick={() => setIsCollapsed(true)}
-                  className="lg:hidden p-2 hover:bg-gray-700 rounded-lg"
+                  className="p-2 bg-green-600 rounded-lg"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
             ) : (
-              <Package className="h-8 w-8 text-green-400 mx-auto" />
+              <div className="h-8 w-8"></div>
             )}
           </div>
 

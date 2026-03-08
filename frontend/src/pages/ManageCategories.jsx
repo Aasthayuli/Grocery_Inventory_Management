@@ -115,7 +115,7 @@ export const ManageCategories = () => {
     <div className="min-h-screen bg-gray-200 p-4 sm:p-6 lg:px-14 py-6">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 sm:mb-6">
+        <div className="flex justify-center items-center mb-4 sm:mb-6 ">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
             Available Categories
           </h1>

@@ -211,8 +211,9 @@ export const ManageProducts = () => {
     <div className="min-h-screen bg-gray-200 p-4 sm:p-6 lg:px-14 py-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
-          <div>
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4 sm:mb-6 gap-3">
+          <div></div>
+          <div className="text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
               Products
             </h1>

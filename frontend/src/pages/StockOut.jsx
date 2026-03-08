@@ -198,10 +198,10 @@ const StockOut = () => {
           </button>
           <div className="flex items-center space-x-3">
             <div className="p-2 sm:p-3 bg-red-100 rounded-xl">
-              <TrendingDown className="h-6 w-6 sm:h-8 sm:w-8 text-red-600" />
+              <TrendingDown className="h-6 w-6 text-red-600" />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
                 Stock OUT
               </h1>
               <p className="text-gray-600 mt-1 text-sm sm:text-base">

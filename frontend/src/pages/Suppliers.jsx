@@ -143,7 +143,8 @@ export const Suppliers = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div>
+          <div></div>
+          <div className="text-center">
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">
               Suppliers
             </h1>
