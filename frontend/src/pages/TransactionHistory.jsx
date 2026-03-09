@@ -48,23 +48,32 @@ const TransactionHistory = () => {
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
-          <input
-            type="date"
-            className="flex-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-          />
-          <input
-            type="date"
-            className="flex-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-          />
+        <div className="flex flex-col  sm:flex-row w-full gap-6">
+          <div className="w-full">
+            <p className="font-semibold text-xl ml-2">From</p>
+            <input
+              type="date"
+              className="border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base w-full"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+            />
+          </div>
+
+          <div className="w-full">
+            <p className="font-semibold text-xl ml-2">To</p>
+            <input
+              type="date"
+              className="border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base w-full"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+            />
+          </div>
         </div>
+      </div>
+      <div className="flex justify-end mb-3 lg:mb-6">
         <button
           onClick={fetchStats}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-5 py-2 rounded-lg transition flex items-center justify-center text-sm sm:text-base whitespace-nowrap"
+          className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-5 py-2 rounded-lg transition flex items-center justify-center text-sm sm:text-base whitespace-nowrap "
         >
           Generate Report
         </button>
