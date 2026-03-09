@@ -132,7 +132,7 @@ const Navbar = () => {
           {showUserMenu && (
             <div
               ref={menuRef}
-              className="absolute right-2 sm:right-4 mt-2 w-56 sm:w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50"
+              className="absolute right-2 sm:right-4 mt-20 w-56 sm:w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50"
             >
               {/* User info - name and email */}
               <div className="px-4 py-2 border-b border-gray-200">
