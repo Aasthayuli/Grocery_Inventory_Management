@@ -8,7 +8,7 @@ class AppLogger:
         log_dir = "logs"
 
         if(not os.path.exists(log_dir)):
-            os.makedirs(log_dir)
+            os.makedirs(log_dir, exist_ok=True)
 
         log_file = os.path.join(log_dir, "app.log")
         level = logging.DEBUG if os.getenv('FLASK_ENV') == 'DEVELOPMENT' else logging.INFO
