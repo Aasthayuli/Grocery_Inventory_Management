@@ -11,13 +11,15 @@ The application supports authentication, inventory handling, barcode generation,
 
 https://grocery-inventory-management-1289.netlify.app
 
-### Backend (Render)
+### Backend (GCP VM)
+
+Backend deployed on GCP VM using Gunicorn with MySQL setup, demonstrating cloud deployment and system integration.
 
 <!-- https://grocery-inventory-management-cw3w.onrender.com -->
 
 ### Watch Video
 
-[Working Demo](https://drive.google.com/file/d/14-XF73ND3rVsi6zF3YFcZdlY39X27K0b/view?usp=sharing)
+[Working Demo](https://drive.google.com/file/d/1szD3oq2cSnQzNNh9kXOU2jTxMe-3d6h2/view?usp=sharing)
 
 ---
 
@@ -45,28 +47,36 @@ https://grocery-inventory-management-1289.netlify.app
 - Tailwind CSS
 - Axios
 - JWT Authentication
-- Netlify Deployment
+- Netlify
 
 ### Backend
 
 - Flask
 - Flask-JWT-Extended
 - SQLAlchemy
-- MySQL
+- MySQL(Hosted on GCP Server)
+- Gunicorn (Production Server)
 - Cloudinary
+
+---
+
+## ⚙️ Deployment Architecture
+
+- Frontend → Netlify
+- Backend → GCP VM (e2-micro)
+- Database → MySQL (same VM)
+- Image Storage → Cloudinary
 
 ---
 
 ## ✨ Features
 
 - User Authentication (JWT)
-- Product Management
-- Category Management
+- Product & Category Management
 - Barcode Generation
 - Cloud Image Storage
 - Inventory Tracking
-- Secure API
-- Health Check API
+- REST APIs (26 endpoints)
 
 ---
 
