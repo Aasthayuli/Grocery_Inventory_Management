@@ -143,10 +143,10 @@ const StockIn = () => {
           </button>
           <div className="flex items-center space-x-3">
             <div className="p-2 sm:p-3 bg-green-100 rounded-xl">
-              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+              <TrendingUp className="h-6 w-6  text-green-600" />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">
+              <h1 className="text-xl sm:text-2xl  font-bold text-gray-800">
                 Stock IN
               </h1>
               <p className="text-gray-600 mt-1 text-sm sm:text-base">

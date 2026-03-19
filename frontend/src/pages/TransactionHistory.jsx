@@ -34,18 +34,20 @@ const TransactionHistory = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-200 px-4 py-6 sm:px-6 lg:px-16">
-      <h1 className="text-xl sm:text-2xl font-semibold mb-6">
-        📊 Transaction Report
-      </h1>
+    <div className="min-h-screen bg-gray-200 p-4  lg:px-16 py-6 ">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-xl sm:text-2xl font-semibold mb-6">
+          📊 Transaction Report
+        </h1>
 
-      {/* Error Message */}
-      {error && (
-        <div className="mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-600">{error}</p>
-        </div>
-      )}
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
 
+<<<<<<< HEAD
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
         <div className="flex flex-col  sm:flex-row w-full gap-6">
@@ -92,20 +94,60 @@ const TransactionHistory = () => {
               title="Total Transactions"
               value={stats.total_transactions}
               color="text-blue-600"
+=======
+        {/* Filters */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
+            <input
+              type="date"
+              className="flex-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+>>>>>>> newUI
             />
-            <ReportCard
-              title="Stock In"
-              value={`${stats.stock_in.count} (Qty: ${stats.stock_in.quantity})`}
-              color="text-green-600"
-            />
-            <ReportCard
-              title="Stock Out"
-              value={`${stats.stock_out.count} (Qty: ${stats.stock_out.quantity})`}
-              color="text-red-600"
+            <input
+              type="date"
+              className="flex-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
             />
           </div>
-        </>
-      )}
+          <button
+            onClick={fetchStats}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-5 py-2 rounded-lg transition flex items-center justify-center text-sm sm:text-base whitespace-nowrap"
+          >
+            Generate Report
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600"></div>
+            <p className="ml-3 text-gray-600">Loading report...</p>
+          </div>
+        ) : (
+          <>
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+              <ReportCard
+                title="Total Transactions"
+                value={stats.total_transactions}
+                color="text-blue-600"
+              />
+              <ReportCard
+                title="Stock In"
+                value={`${stats.stock_in.count} (Qty: ${stats.stock_in.quantity})`}
+                color="text-green-600"
+              />
+              <ReportCard
+                title="Stock Out"
+                value={`${stats.stock_out.count} (Qty: ${stats.stock_out.quantity})`}
+                color="text-red-600"
+              />
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

@@ -178,7 +178,7 @@ export const AddProduct = () => {
     <div className="min-h-screen bg-gray-200 p-4 sm:p-6">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-6 text-center">
           <button
             onClick={() => navigate("/products")}
             className="cursor-pointer flex items-center text-gray-600 hover:text-gray-800 mb-4 text-sm sm:text-base"
