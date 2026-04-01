@@ -198,22 +198,10 @@ def insert_product():
         # Generate barcode if not provided
         if not new_product.barcode or str(new_product.barcode).strip() == "":
             try:
-                storage_mode = current_app.config.get('IMAGE_STORAGE', 'local')
-
-                if storage_mode == 'cloud':
-                    barcode_info = generate_and_save_barcode(
+                barcode_info= generate_and_save_barcode(
                         product_id=new_product.id,
-                        product_name=new_product.name,
-                        storage_mode='cloud'
-                    )
-                else:
-                    barcode_info= generate_and_save_barcode(
-                        product_id=new_product.id,
-                        product_name=new_product.name,
-                        storage_mode='local'
-                    )
-                
-                print("STORAGE MODE:", storage_mode)
+                        product_name=new_product.name
+                )
 
                 if barcode_info['barcode_number']:
                     new_product.barcode = barcode_info['barcode_number']
@@ -332,7 +320,7 @@ def delete_product(product_id):
     try:
 
         # Get current user
-        current_user_id = int(get_jwt_identity())  # Token contains User.id (encrypted inside token)
+        current_user_id = int(get_jwt_identity())  
         current_user = User.query.get(current_user_id)
 
         # check if admin
@@ -356,19 +344,11 @@ def delete_product(product_id):
         db.session.commit()
 
         # delete Barcode image
-        storage_mode = current_app.config.get('IMAGE_STORAGE', 'local')
         import os
         from config.cloudinary_config import delete_from_cloudinary
-        if storage_mode == 'local':
-            base_url = current_app.config.get('LOCAL_BARCODE_BASE_URL')
-            barcode_path = f"{base_url}static/barcodes/barcode_{product_barcode}.png"
-            if os.path.exists(barcode_path):
-                os.remove(barcode_path)
-        else:
-            # cloud mode
-            result = delete_from_cloudinary(product_barcode)
-            if result.get("result") != "ok":
-                logger.error(f"Cloudinary Image delete failed: {result}")
+        result = delete_from_cloudinary(product_barcode)
+        if result.get("result") != "ok":
+            logger.error(f"Cloudinary Image delete failed: {result}")
 
         logger.info(
             f'Product deleted: {product_name} (SKU: {product_sku}, ID: {product_id})'

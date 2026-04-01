@@ -57,17 +57,11 @@ def get_barcode_image_url(product_id):
         
         if not product.barcode:
             return error_response('Barcode not Found', status_code= 404)
-        
-        storage_mode = current_app.config.get('IMAGE_STORAGE', 'local')
-
-        if storage_mode == 'cloud':
-            # cloudinary url
-            base_url = current_app.config.get("CLOUD_BARCODE_BASE_URL")
-            barcode_url = f"{base_url}/image/upload/grocery_barcodes/barcode_{product.barcode}.png"
-        else:
-            # local url
-            base_url = current_app.config.get("LOCAL_BARCODE_BASE_URL")
-            barcode_url = f"{base_url}/static/barcodes/barcode_{product.barcode}.png"
+                
+        # cloudinary url
+        base_url = current_app.config.get("CLOUD_BARCODE_BASE_URL")
+        barcode_url = f"{base_url}/image/upload/grocery_barcodes/barcode_{product.barcode}.png"
+       
         
         return success_response(
             "Barcode URL retrieved",
