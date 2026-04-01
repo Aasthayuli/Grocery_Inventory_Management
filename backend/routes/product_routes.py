@@ -191,7 +191,7 @@ def insert_product():
         )
 
         db.session.add(new_product)
-        db.session.commit()
+        db.session.flush()
 
         print("BARCODE BEFORE: ", new_product.barcode)
 
@@ -221,7 +221,7 @@ def insert_product():
                     logger.info(f'Barcode generated for product: {new_product.name}')
             
             except Exception as barcode_error:
-                logger.error(f'Barcode generation failed: {str(barcode_error)}')
+                print(f'Barcode generation failed: {str(barcode_error)}')
                 raise
 
         logger.info(
