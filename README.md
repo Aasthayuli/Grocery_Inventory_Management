@@ -15,7 +15,7 @@ https://grocery-inventory-management-1289.netlify.app
 
 Backend deployed on GCP VM using Gunicorn with MySQL setup, demonstrating cloud deployment and system integration.
 
-<!-- https://grocery-inventory-management-cw3w.onrender.com -->
+[https://stockyz.in](https://stockyz.in)
 
 ### Watch Video
 
@@ -37,7 +37,25 @@ Backend deployed on GCP VM using Gunicorn with MySQL setup, demonstrating cloud 
 
 ![Barcode](screenshots/barcodes.png)
 
----
+### Category Management
+
+![Category](screenshots/category.png)
+
+### Stock in
+
+![Stock In](screenshots/stockIn.png)
+
+### Stock Out
+
+![Staock out](screenshots/stockOut.png)
+
+### Transaction Reports
+
+![transactions](screenshots/transaction.png)
+
+### Expiring products
+
+## ![Expiring](screenshots/expiring.png)
 
 ## 🧰 Tech Stack
 
@@ -77,39 +95,6 @@ Backend deployed on GCP VM using Gunicorn with MySQL setup, demonstrating cloud 
 - Cloud Image Storage
 - Inventory Tracking
 - REST APIs (26 endpoints)
-
----
-
-## ⚙️ Environment Variables
-
-### Backend (.env)
-
-```env
-DB_USER=your_username
-DB_PASSWORD=your_password
-DB_HOST=your_host
-DB_PORT=your_port
-DB_NAME=your_db
-
-SECRET_KEY=your_secret_key
-JWT_SECRET_KEY=your_jwt_secret
-
-IMAGE_STORAGE=cloud
-CLOUD_BARCODE_BASE_URL=your_cloudinary_url
-
-FRONTEND_URL=frontend_url
-```
-
-### Frontend (.env)
-
-```env
-# Backend API Base URL
-VITE_API_URL=your_backend_url
-
-# JWT Token Storage Key
-VITE_TOKEN_KEY=grocery_auth_token
-VITE_REFRESH_TOKEN_KEY=grocery_refresh_token
-```
 
 ---
 

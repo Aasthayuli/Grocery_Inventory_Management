@@ -1,0 +1,10 @@
+# Frontend Environment Variables
+
+# Backend API Base URL
+
+VITE_API_URL=your_backend_api_url
+
+# JWT Token Storage Key
+
+VITE_TOKEN_KEY=grocery_auth_token
+VITE_REFRESH_TOKEN_KEY=grocery_refresh_token

@@ -117,7 +117,7 @@ def save_barcode_image_cloud(barcode_no, upload_to_cloudinary):
         logger.error(f'failed to save barcode to Cloudinary: {str(e)}')
         raise
 
-def generate_and_save_barcode(product_id, product_name='', storage_mode='local', cloudinary_upload_fn=None):
+def generate_and_save_barcode(product_id, product_name='', storage_mode='local'):
     """
     Combined Functions: Generate barcode number and save image
 
@@ -148,12 +148,10 @@ def generate_and_save_barcode(product_id, product_name='', storage_mode='local',
             }
         
         elif storage_mode == 'cloud':
-
-            if not cloudinary_upload_fn:
-                raise ValueError("Cloudinary upload function required for cloud storage")
+            from config.cloudinary_config import upload_to_cloudinary
             
             cloudinary_url, actual_barcode = save_barcode_image_cloud(
-                barcode_number, cloudinary_upload_fn)
+                barcode_number, upload_to_cloudinary)
             
             logger.info(f'Barcode saved to cloud: {product_name} - {actual_barcode}')
 

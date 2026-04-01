@@ -154,7 +154,7 @@ def insert_product():
         is_valid, missing = validate_required_fields(data, required_fields)
 
         if not is_valid:
-            error_response(f'Missing required fields: {missing}', status_code=400)
+            return error_response(f'Missing required fields: {missing}', status_code=400)
 
         # check if SKU already exists
         if Product.query.filter_by(sku=data['sku']).first():
@@ -177,7 +177,7 @@ def insert_product():
             expiry_date = parse_date(data['expiry_date'])
             if not expiry_date:
                 return error_response('Invalid Expiry Date format. Use YYYY-MM-DD', status_code=400)
-
+            
         # create product
         new_product = Product(
             name=data['name'].strip(),
@@ -187,39 +187,42 @@ def insert_product():
             category_id=data['category_id'],
             supplier_id=data['supplier_id'],
             expiry_date=expiry_date,
-            barcode=data.get('barcode')  # optional
+            barcode=data.get('barcode') or None
         )
 
         db.session.add(new_product)
         db.session.commit()
 
+        print("BARCODE BEFORE: ", new_product.barcode)
+
         # Generate barcode if not provided
-        if not new_product.barcode:
+        if not new_product.barcode or str(new_product.barcode).strip() == "":
             try:
-                from config.cloudinary_config import upload_to_cloudinary
                 storage_mode = current_app.config.get('IMAGE_STORAGE', 'local')
 
                 if storage_mode == 'cloud':
                     barcode_info = generate_and_save_barcode(
                         product_id=new_product.id,
                         product_name=new_product.name,
-                        storage_mode='cloud',
-                        cloudinary_upload_fn=upload_to_cloudinary
+                        storage_mode='cloud'
                     )
                 else:
                     barcode_info= generate_and_save_barcode(
                         product_id=new_product.id,
                         product_name=new_product.name,
-                        storage_mode='local',
+                        storage_mode='local'
                     )
+                
+                print("STORAGE MODE:", storage_mode)
 
-                new_product.barcode = barcode_info['barcode_number']
-                db.session.commit()
-                logger.info(f'Barcode generated for product: {new_product.name}')
+                if barcode_info['barcode_number']:
+                    new_product.barcode = barcode_info['barcode_number']
+                    db.session.commit()
+                    logger.info(f'Barcode generated for product: {new_product.name}')
             
             except Exception as barcode_error:
                 logger.error(f'Barcode generation failed: {str(barcode_error)}')
-                # continue without barcode non critical
+                raise
 
         logger.info(
             f'Product Created: {new_product.name} (SKU: {new_product.sku}),'
