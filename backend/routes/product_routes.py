@@ -192,22 +192,25 @@ def insert_product():
         db.session.add(new_product)
         db.session.flush()
 
-        # Generate barcode
+        # Generate barcode (REQUIRED - product creation fails if barcode generation fails)
         if not new_product.barcode:
             try:
-                barcode_info= generate_and_save_barcode(
-                        product_id=new_product.id,
-                        product_name=new_product.name
+                barcode_info = generate_and_save_barcode(
+                    product_id=new_product.id,
+                    product_name=new_product.name
                 )
 
-                if barcode_info['barcode_number']:
+                if barcode_info.get('barcode_number'):
                     new_product.barcode = barcode_info['barcode_number']
-                    db.session.commit()
                     logger.info(f'Barcode generated for product: {new_product.name}')
             
             except Exception as barcode_error:
-                print(f'Barcode generation failed: {str(barcode_error)}')
+                error_msg = f'Barcode generation failed for product {new_product.name}: {str(barcode_error)}'
+                logger.error(error_msg)
+                db.session.rollback()
                 raise
+        
+        db.session.commit()
 
         logger.info(
             f'Product Created: {new_product.name} (SKU: {new_product.sku}),'

@@ -4,6 +4,7 @@ from sqlalchemy import text
 from flask_jwt_extended import JWTManager
 from config.logging_config import AppLogger
 from config.database import db, init_db
+from config.cloudinary_config import init_cloudinary
 
 from dotenv import load_dotenv
 import os
@@ -36,10 +37,19 @@ def create_app():
         app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
         app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
         app.config['CLOUD_BARCODE_BASE_URL']= os.getenv('CLOUD_BARCODE_BASE_URL')
+        app.config['IMAGE_STORAGE'] = 'cloudinary'
 
         logger.info("Flask Application configuration loaded!")
         logger.info(f'Using Database: {os.getenv("DB_NAME")}')
         logger.info(f'Database running on: {os.getenv("DB_HOST")}:{os.getenv("DB_PORT")}')
+        
+        # Initialize Cloudinary
+        try:
+            init_cloudinary()
+            logger.info("Cloudinary initialized successfully")
+        except ValueError as cloudinary_error:
+            logger.error(f"Cloudinary initialization failed: {str(cloudinary_error)}")
+            logger.warning("Application will continue but barcode uploads will fail")
 
     except Exception as e:
         logger.error(f'Failed to load configuration . . .')

@@ -1,8 +1,10 @@
 import barcode
 from barcode.writer import ImageWriter
 import os
+import tempfile
 from io import BytesIO
 from config.logging_config import AppLogger
+from config.cloudinary_config import upload_to_cloudinary
 
 logger = AppLogger.get_logger(__name__)
 
@@ -25,7 +27,7 @@ def generate_barcode(product_id, product_name=''):
         logger.error(f'Barcode generation failed for product {product_id} - {product_name} : {str(e)}')
         raise
 
-def save_barcode_image_cloud(barcode_no, upload_to_cloudinary):
+def save_barcode_image_cloud(barcode_no):
     """
     Save Barcode to Cloudinary (PRODUCTION)
 
@@ -35,43 +37,62 @@ def save_barcode_image_cloud(barcode_no, upload_to_cloudinary):
 
     Returns:
         tuple: (cloudinary_url, actual_barcode_number)
+    
+    Raises:
+        Exception: If barcode generation or Cloudinary upload fails
     """
+    temp_path = None
     try:
         # get EAN-13 barcode class
         EAN = barcode.get_barcode_class('ean13')
-        ean = EAN(barcode_no, writer= ImageWriter())
+        ean = EAN(barcode_no, writer=ImageWriter())
 
         # get actual barcode number (13 digits)
         actual_barcode = ean.get_fullcode()
+        logger.debug(f'Generated EAN-13 barcode: {actual_barcode}')
 
         # generate barcode in memory
         buffer = BytesIO()
-        ean.write(buffer, {})
+        ean.write(buffer)
         buffer.seek(0)
 
-        # save to temporary file for upload
-        temp_path = f"temp_barcode_{actual_barcode}.png"
-        with open(temp_path, 'wb') as f:
-            f.write(buffer.getvalue())
+        # save to temporary file in system temp directory 
+        with tempfile.NamedTemporaryFile(
+            suffix='.png',
+            prefix=f'barcode_{actual_barcode}_',
+            delete=False,
+            dir=tempfile.gettempdir()
+        ) as temp_file:
+            temp_path = temp_file.name
+            temp_file.write(buffer.getvalue())
+            logger.debug(f'Barcode image saved to temp: {temp_path}')
         
         # upload to cloudinary
+        logger.debug(f'Uploading barcode to Cloudinary: {temp_path}')
         cloudinary_result = upload_to_cloudinary(
-            file_path = temp_path,
-            public_id = f"barcode_{actual_barcode}",
-            folder= "grocery_barcodes"
+            file_path=temp_path,
+            public_id=f"barcode_{actual_barcode}",
+            folder="grocery_barcodes"
         )
 
-        # delete temporary file
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
-        
         cloudinary_url = cloudinary_result['secure_url']
-        print(f'Barcode uploaded to Cloudinary: {cloudinary_url}')
+        logger.info(f'Barcode successfully uploaded to Cloudinary: {cloudinary_url}')
 
         return cloudinary_url, actual_barcode
+        
     except Exception as e:
-        logger.error(f'failed to save barcode to Cloudinary: {str(e)}')
-        raise
+        error_msg = f'Failed to save barcode to Cloudinary: {str(e)}'
+        logger.error(error_msg)
+        raise Exception(error_msg) from e
+    
+    finally:
+        # ensure temporary file is cleaned up
+        if temp_path and os.path.exists(temp_path):
+            try:
+                os.remove(temp_path)
+                logger.debug(f'Cleaned up temp file: {temp_path}')
+            except Exception as cleanup_error:
+                logger.warning(f'Failed to clean up temp file {temp_path}: {str(cleanup_error)}')
 
 def generate_and_save_barcode(product_id, product_name=''):
     """
@@ -91,11 +112,9 @@ def generate_and_save_barcode(product_id, product_name=''):
     try:
         # Generate barcode number
         barcode_number = generate_barcode(product_id, product_name)
-        
-        from config.cloudinary_config import upload_to_cloudinary
             
         cloudinary_url, actual_barcode = save_barcode_image_cloud(
-                barcode_number, upload_to_cloudinary)
+                barcode_number)
             
         print(f'Barcode saved to cloud: {product_name} - {actual_barcode}')
 
