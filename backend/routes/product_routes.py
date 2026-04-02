@@ -142,8 +142,7 @@ def insert_product():
         "quantity": 100,
         "category_id":1,
         "supplier_id":1,
-        "expiry_date":"2026-01-31" (optional),
-        "barcode":"123456789012" (optional, auto generated if not provided)
+        "expiry_date":"2026-01-31" (optional)
     }
     """
     try:
@@ -187,16 +186,14 @@ def insert_product():
             category_id=data['category_id'],
             supplier_id=data['supplier_id'],
             expiry_date=expiry_date,
-            barcode=data.get('barcode') or None
+            barcode=None
         )
 
         db.session.add(new_product)
         db.session.flush()
 
-        print("BARCODE BEFORE: ", new_product.barcode)
-
-        # Generate barcode if not provided
-        if not new_product.barcode or str(new_product.barcode).strip() == "":
+        # Generate barcode
+        if not new_product.barcode:
             try:
                 barcode_info= generate_and_save_barcode(
                         product_id=new_product.id,
@@ -344,7 +341,6 @@ def delete_product(product_id):
         db.session.commit()
 
         # delete Barcode image
-        import os
         from config.cloudinary_config import delete_from_cloudinary
         result = delete_from_cloudinary(product_barcode)
         if result.get("result") != "ok":

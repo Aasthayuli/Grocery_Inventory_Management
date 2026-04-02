@@ -35,8 +35,7 @@ def create_app():
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
         app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
-        app.config['IMAGE_STORAGE'] = os.getenv('IMAGE_STORAGE', 'local')
-        app.config['LOCAL_BARCODE_BASE_URL'] = os.getenv('LOCAL_BARCODE_BASE_URL')
+        app.config['CLOUD_BARCODE_BASE_URL']= os.getenv('CLOUD_BARCODE_BASE_URL')
 
         logger.info("Flask Application configuration loaded!")
         logger.info(f'Using Database: {os.getenv("DB_NAME")}')
@@ -69,15 +68,7 @@ def create_app():
     logger.info("JWT authentication initialized.")
 
     #Initialize database
-    init_db(app)  
-
-    # Initialize Cloudinary if cloud Storage
-    if app.config['IMAGE_STORAGE'] == 'cloud':
-        app.config['CLOUD_BARCODE_BASE_URL'] = os.getenv('CLOUD_BARCODE_BASE_URL')
-        logger.info("Cloud Storage Mode enabled")
-    else:
-        logger.info("Local Storage Mode enabled")
-        
+    init_db(app)          
 
     # Register blueprints(routes)
     from routes import auth_bp, product_bp, supplier_bp, transaction_bp, barcode_bp, category_bp

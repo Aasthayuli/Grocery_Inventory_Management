@@ -20,10 +20,6 @@ JWT_ACCESS_TOKEN_EXPIRES=3600
 
 FLASK_RUN_PORT=5000
 
-# Image storage Mode ('local' for development and 'cloud' from production)
-
-IMAGE_STORAGE=cloud
-
 # Cloudinary Config
 
 CLOUDINARY_CLOUD_NAME=dwcjpxjmi

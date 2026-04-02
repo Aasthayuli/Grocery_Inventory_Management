@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { X, ArrowLeft, Save, Barcode as BarcodeIcon } from "lucide-react";
+import { X, ArrowLeft, Save, Barcode } from "lucide-react";
 import {
   createProduct,
   updateProduct,
@@ -30,7 +30,6 @@ export const AddProduct = () => {
     category_id: "",
     supplier_id: "",
     expiry_date: "",
-    barcode: "",
   });
 
   useEffect(() => {
@@ -56,7 +55,6 @@ export const AddProduct = () => {
         category_id: product.category_id || "",
         supplier_id: product.supplier_id || "",
         expiry_date: product.expiry_date || "",
-        barcode: product.barcode || "",
       });
 
       setLoadingData(false);
@@ -135,11 +133,6 @@ export const AddProduct = () => {
       if (formData.expiry_date) {
         payload.expiry_date = formData.expiry_date;
       }
-
-      if (formData.barcode) {
-        payload.barcode = formData.barcode;
-      }
-
       if (isEditMode) {
         await updateProduct(id, payload);
         setMsg("Product Updated Successfully!");
@@ -350,19 +343,9 @@ export const AddProduct = () => {
             {/* Barcode */}
             {!isEditMode && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                  Barcode (Optional)
+                <label className="block text-sm font-medium text-red-700 mb-1 sm:mb-2">
+                  Barcode will be Automatically generated
                 </label>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <input
-                    type="text"
-                    name="barcode"
-                    value={formData.barcode}
-                    onChange={handleInputChange}
-                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
-                    placeholder="Auto-generated or enter manually"
-                  />
-                </div>
               </div>
             )}
             {/* Buttons */}
