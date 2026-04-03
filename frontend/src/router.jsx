@@ -69,17 +69,15 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-200 px-14 py-6 w-1/2 md:w-full">
-      <div className="max-w-7xl mx-auto text-center">
-        <div className="flex-col md:flex justify-around items-center">
+    <div className="min-h-screen bg-gray-200 py-6 w-full">
+      <div className="w-screen md:w-7xl mx-auto text-center">
+        <div className="flex-col md:flex justify-center items-center">
           <h2 className="text-2xl md:text-4xl font-bold font-serif underline">
             Manage your Inventory
           </h2>
-          <img
-            src={images[currentIndex]}
-            alt="Inventory"
-            className="w-1/2 h-1/2 md:w-100 md:h-75 object-contain transition-all duration-500"
-          />
+          <div className="w-1/2 h-1/2 md:w-100 md:h-75 transition-all duration-500 ml-20 md:ml-0">
+            <img src={images[currentIndex]} alt="Inventory" />
+          </div>
         </div>
         <div className="overflow-hidden mt-12">
           <div className="flex gap-10 animate-scroll">
