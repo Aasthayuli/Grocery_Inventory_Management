@@ -43,10 +43,14 @@ def save_barcode_image_cloud(barcode_no):
     """
     temp_path = None
     try:
+        try:
         # get EAN-13 barcode class
-        EAN = barcode.get_barcode_class('ean13')
-        ean = EAN(barcode_no, writer=ImageWriter())
-
+            EAN = barcode.get_barcode_class('EAN13')
+            ean = EAN(barcode_no, writer=ImageWriter())
+        except Exception as e:
+            print(f'Error generating EAN-13 barcode object: {str(e)}', flush=True)
+            raise Exception(f'Failed to generate EAN-13 barcode: {str(e)}') from e
+        
         # get actual barcode number (13 digits)
         actual_barcode = ean.get_fullcode()
         print(f'Generated EAN-13 barcode: {actual_barcode}', flush=True)
