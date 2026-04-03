@@ -1,3 +1,4 @@
+from barcode import EAN13
 import barcode
 from barcode.writer import ImageWriter
 import os
@@ -45,8 +46,7 @@ def save_barcode_image_cloud(barcode_no):
     try:
         try:
         # get EAN-13 barcode class
-            EAN = barcode.get_barcode_class('EAN13')
-            ean = EAN(barcode_no, writer=ImageWriter())
+            ean = EAN13(barcode_no, writer=ImageWriter())
         except Exception as e:
             print(f'Error generating EAN-13 barcode object: {str(e)}', flush=True)
             raise Exception(f'Failed to generate EAN-13 barcode: {str(e)}') from e
