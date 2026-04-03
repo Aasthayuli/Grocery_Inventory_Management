@@ -21,10 +21,10 @@ def generate_barcode(product_id, product_name=''):
 
     try:
         barcode_no = str(product_id).zfill(12)
-        print(f'Generated barcode for product: {product_name}')
+        print(f'12 digit generated barcode for product: {product_name}- {barcode_no}', flush=True)
         return barcode_no
     except Exception as e:
-        logger.error(f'Barcode generation failed for product {product_id} - {product_name} : {str(e)}')
+        print(f'12 digit Barcode generation failed for product {product_id} - {product_name} : {str(e)}', flush=True)
         raise
 
 def save_barcode_image_cloud(barcode_no):
@@ -49,26 +49,35 @@ def save_barcode_image_cloud(barcode_no):
 
         # get actual barcode number (13 digits)
         actual_barcode = ean.get_fullcode()
-        logger.debug(f'Generated EAN-13 barcode: {actual_barcode}')
+        print(f'Generated EAN-13 barcode: {actual_barcode}', flush=True)
 
         # generate barcode in memory
         buffer = BytesIO()
-        ean.write(buffer)
-        buffer.seek(0)
+        try:
+            ean.write(buffer)
+            buffer.seek(0)
+        except Exception as e:
+            print(f'Error generating barcode image in memory: {str(e)}', flush=True)
+            raise Exception(f'Failed to generate barcode image: {str(e)}') from e
 
+        try:
         # save to temporary file in system temp directory 
-        with tempfile.NamedTemporaryFile(
-            suffix='.png',
-            prefix=f'barcode_{actual_barcode}_',
-            delete=False,
-            dir=tempfile.gettempdir()
-        ) as temp_file:
-            temp_path = temp_file.name
-            temp_file.write(buffer.getvalue())
-            logger.debug(f'Barcode image saved to temp: {temp_path}')
-        
+            with tempfile.NamedTemporaryFile(
+                suffix='.png',
+                prefix=f'barcode_{actual_barcode}_',
+                delete=False,
+                dir=tempfile.gettempdir()
+            ) as temp_file:
+                temp_path = temp_file.name
+                temp_file.write(buffer.getvalue())
+                print(f'Barcode image saved to temp: {temp_path}', flush=True)
+                print("Temp file size:", os.path.getsize(temp_path), flush=True)
+        except Exception as e:
+            print(f'Error saving barcode to temp file: {str(e)}', flush=True)
+            raise Exception(f'Failed to save barcode image to temp file: {str(e)}') from e
+
         # upload to cloudinary
-        logger.debug(f'Uploading barcode to Cloudinary: {temp_path}')
+        print(f'Uploading barcode to Cloudinary: {temp_path}', flush=True)
         cloudinary_result = upload_to_cloudinary(
             file_path=temp_path,
             public_id=f"barcode_{actual_barcode}",
@@ -76,13 +85,13 @@ def save_barcode_image_cloud(barcode_no):
         )
 
         cloudinary_url = cloudinary_result['secure_url']
-        logger.info(f'Barcode successfully uploaded to Cloudinary: {cloudinary_url}')
+        print(f'Barcode successfully uploaded to Cloudinary: {cloudinary_url}', flush=True)
 
         return cloudinary_url, actual_barcode
         
     except Exception as e:
         error_msg = f'Failed to save barcode to Cloudinary: {str(e)}'
-        logger.error(error_msg)
+        print(error_msg, flush=True)
         raise Exception(error_msg) from e
     
     finally:
@@ -90,9 +99,9 @@ def save_barcode_image_cloud(barcode_no):
         if temp_path and os.path.exists(temp_path):
             try:
                 os.remove(temp_path)
-                logger.debug(f'Cleaned up temp file: {temp_path}')
+                print(f'Cleaned up temp file: {temp_path}', flush=True)
             except Exception as cleanup_error:
-                logger.warning(f'Failed to clean up temp file {temp_path}: {str(cleanup_error)}')
+                print(f'Failed to clean up temp file {temp_path}: {str(cleanup_error)}', flush=True)
 
 def generate_and_save_barcode(product_id, product_name=''):
     """
@@ -116,7 +125,7 @@ def generate_and_save_barcode(product_id, product_name=''):
         cloudinary_url, actual_barcode = save_barcode_image_cloud(
                 barcode_number)
             
-        print(f'Barcode saved to cloud: {product_name} - {actual_barcode}')
+        print(f'Barcode saved to cloud: {product_name} - {actual_barcode}', flush=True)
 
         return {
                 'barcode_number': actual_barcode,
@@ -125,7 +134,7 @@ def generate_and_save_barcode(product_id, product_name=''):
             }
         
     except Exception as e:
-        logger.error(f'Complete barcode generation failed: {str(e)}')
+        print(f'Complete barcode generation failed: {str(e)}', flush=True)
         raise
 
 def validate_barcode(barcode_number):

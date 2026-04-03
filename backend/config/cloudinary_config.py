@@ -32,7 +32,10 @@ def init_cloudinary():
         api_secret=api_secret,
         secure=True
     )
-    logger.info("Cloudinary initialized successfully")
+    print("Cloudinary init called", flush=True)
+    print("Cloud name:", os.getenv("CLOUDINARY_CLOUD_NAME"), flush=True)
+    print("API key:", os.getenv("CLOUDINARY_API_KEY"), flush=True)
+
 
 def upload_to_cloudinary(file_path, public_id, folder="grocery_barcodes"):
     """
