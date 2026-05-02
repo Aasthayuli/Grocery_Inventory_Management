@@ -38,10 +38,6 @@ def create_app():
         app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
         app.config['CLOUD_BARCODE_BASE_URL']= os.getenv('CLOUD_BARCODE_BASE_URL')
         app.config['IMAGE_STORAGE'] = 'cloudinary'
-
-        logger.info("Flask Application configuration loaded!")
-        logger.info(f'Using Database: {os.getenv("DB_NAME")}')
-        logger.info(f'Database running on: {os.getenv("DB_HOST")}:{os.getenv("DB_PORT")}')
         
         # Initialize Cloudinary
         try:
@@ -49,7 +45,6 @@ def create_app():
             logger.info("Cloudinary initialized successfully")
         except ValueError as cloudinary_error:
             logger.error(f"Cloudinary initialization failed: {str(cloudinary_error)}")
-            logger.warning("Application will continue but barcode uploads will fail")
 
     except Exception as e:
         logger.error(f'Failed to load configuration . . .')
@@ -61,7 +56,6 @@ def create_app():
         "http://localhost:3000",
         os.getenv('FRONTEND_URL','')
     ]
-    allowed_origins= [origin for origin in allowed_origins]
 
     # Enable CORS(allowed frontend to access backend)
     CORS(app, resources={
@@ -104,20 +98,15 @@ def create_app():
     # Test route
     @app.route("/")
     def home():
-        logger.debug("Root endpoint accessed!")
         return {
             'message': 'Inventory Management API',
-            'status': 'running',
-            'version' : '1.0',
-            'Storage Mode':app.config['IMAGE_STORAGE']
+            'status': 'running'
         }
     
     @app.route("/api/health")
     def health_check():
-        logger.debug("health endpoint accessed.")
         try:
             db.session.execute(text("SELECT 1"))
-            logger.info("Health check passed !")
             return {
                 'status' : 'healthy',
                 'database' : 'connected'

@@ -6,8 +6,7 @@ from models import User, Product, Transaction
 from utils import(
             success_response,
             error_response,
-            validate_required_fields,
-            paginate_query
+            validate_required_fields
 )
 from datetime import datetime, timedelta
 
@@ -34,63 +33,7 @@ def get_all_transactions():
     Returns:
         200: List of transactions
     """
-    try:
-        page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 10, type=int)
-
-        # build query
-        query = Transaction.query
-
-        # filter by type
-        transaction_type = request.args.get('type', '').upper()
-        if transaction_type in ['IN', 'OUT']:
-            query = query.filter_by(type= transaction_type)
-
-        # filter by product
-        product_id = request.args.get('product_id',type=int)
-        if product_id:
-            query = query.filter_by(product_id = product_id)
-
-        # filter by user
-        user_id = request.args.get('user_id',type=int)
-        if user_id:
-            query = query.filter_by(user_id = user_id)
-
-        # filter by date range
-        from_date = request.args.get('from_date')
-        if from_date:
-            query = query.filter_by(Transaction.date >= from_date)
-
-        to_date = request.args.get('to_date')
-        if to_date:
-            query = query.filter_by(Transaction.date <= to_date)
-
-        # order by date
-        query= query.order_by(Transaction.date.desc())
-
-        # paginate
-        result = paginate_query(query, page, per_page)
-
-        # Include relations
-        transactions_data = [t.to_dict() for t in result['items']]
-
-        logger.info(f'Transactions fetched: Page={page}, total= {result["total"]}')
-
-        return success_response(f'Transactions retrieved successfully',
-                                data={
-                                    'transactions': transactions_data,
-                                    'pagination':{
-                                        'page': result['pages'],
-                                        'per_page':result['per_page'],
-                                        'current_page':result['current_page'],
-                                        'has_next': result['has_next'],
-                                        'has_prev': result['has_prev']
-                                    }
-                                }
-        )
-    except Exception as e:
-        logger.error(f'Error in getting transactions: {str(e)}')
-        return error_response(f'Failed to fetch transactions', status_code=500)
+    pass
 
 
 @transaction_bp.route('/stock-in', methods=['POST'])

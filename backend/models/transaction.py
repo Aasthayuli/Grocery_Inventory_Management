@@ -59,13 +59,6 @@ class Transaction(db.Model):
     def create_stock_in(product, quantity, user, notes=None):
         """
         Helper method to create STOCK IN transaction
-        Args:
-            product: Product Object
-            quantity: Quantity to add (positive integer)
-            user: User Object (who performed the action)
-            notes: Optional(like supplier invoice, reason, etc.)
-        Returns: 
-            Transaction Object
         """
         if quantity <= 0:
             raise ValueError("Added Quantity must be positive for STOCK IN")
@@ -87,13 +80,6 @@ class Transaction(db.Model):
     def create_stock_out(product, quantity, user, notes=None):
         """
         Helper method to create STOCK OUT transaction
-        Args:
-            product: Product object
-            quantity: Quantity to remove (positive integer)
-            user: User object (who performed the action)
-            notes: Optional notes (customer name, sale info, etc.)
-        Returns:
-            Transaction object
         Raises:
             ValueError: If insufficient stock
         """

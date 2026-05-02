@@ -16,8 +16,6 @@ def generate_barcode(product_id, product_name=''):
     Args:
         product_id: Unique product identifier
         product_name: Product name (for filename)
-    Returns:
-        str: Barcode number (13 digits)
     """
 
     try:
@@ -36,11 +34,6 @@ def save_barcode_image_cloud(barcode_no):
        barcode_no : 12-digit barcode string
        upload_to_cloudinary: Function to upload to cloudinary
 
-    Returns:
-        tuple: (cloudinary_url, actual_barcode_number)
-    
-    Raises:
-        Exception: If barcode generation or Cloudinary upload fails
     """
     temp_path = None
     try:
@@ -116,11 +109,6 @@ def generate_and_save_barcode(product_id, product_name=''):
         product_name: Product name (for logging)
         cloudinary_upload_fn: Cloudinary upload function (required if cloud)
     
-    Returns:
-        dict: {
-            'barcode_number': str,
-            'image_path':'image_url': str(cloud)
-        }
     """
     try:
         # Generate barcode number

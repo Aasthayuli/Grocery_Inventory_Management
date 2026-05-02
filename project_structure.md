@@ -29,12 +29,6 @@
             ├── product_routes.py
             ├── supplier_routes.py
             ├── transaction_routes.py
-        └── 📁static
-            └── 📁barcodes
-                ├── barcode_000000000010.png
-                ├── barcode_000000000011.png
-                ├── barcode_000000000012.png
-                ├── barcode_000000000013.png
         └── 📁utils
             ├── __init__.py
             ├── barcode_generator.py

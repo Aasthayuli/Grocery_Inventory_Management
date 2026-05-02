@@ -86,8 +86,6 @@ def get_all_products():
         # Include relations in response
         products_data = [p.to_dict(include_relations=True) for p in result['items']]
 
-        # logger.info(f'Products fetched: Page: {page}, total: {result["total"]}')
-
         return success_response(
             'Products retrieved successfully!',
             data={
@@ -327,7 +325,6 @@ def delete_product(product_id):
         if current_user.role != 'admin':
             logger.warning(
                 f'Unauthorized delete attempt: {current_user_id}'
-                f'tried to delete product: {product_id}'
             )
             return error_response(f'Admin access required!', status_code= 403)
 

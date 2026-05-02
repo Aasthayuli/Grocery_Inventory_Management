@@ -4,7 +4,7 @@ from datetime import datetime
 
 class Product(db.Model):
     """
-    Product table - core of inventory system
+    Product table
     track stocks, pricing, expiry dates, and supplier information
     """
 

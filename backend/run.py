@@ -11,12 +11,6 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("GROCERY INVENTORY MANAGEMENT SYSTEM")
     print("=" * 60)
-    print(f"Server running on: http://{host}:{port}")
-    print(f"Debug mode: {'ON' if debug_mode else 'OFF'}")
-    print(f"Logs directory: logs/")
-    print(f"Database: {os.getenv('DB_NAME', 'inventory_db')}")
-    print("=" * 60)
-    print("\nServer is ready! Press CTRL+C to stop\n")
 
     # Run server
     app.run(
