@@ -377,7 +377,7 @@ const StockOut = () => {
                 onChange={(e) => handleQuantityChange(e.target.value)}
                 required
                 min="1"
-                max={selectedProduct?.quantity || undefined}
+                max={selectedProduct?.quantity}
                 className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
                 placeholder="Enter quantity"
               />

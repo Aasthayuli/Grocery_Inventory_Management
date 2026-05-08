@@ -125,7 +125,7 @@ export const getErrorMessage = (error) => {
 
 /**
  * Helper function to get current user from token
- * Note: Basic Implementation. In production, needed decoding JWT Properly.
+ * Note: Basic Implementation.
  * @returns {object|null}
  */
 export const getCurrentUser = () => {

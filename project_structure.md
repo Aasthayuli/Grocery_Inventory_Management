@@ -37,7 +37,6 @@
         ├── app.py
         ├── requirements.txt
         ├── run.py
-        ├── test_models.py
     └── 📁frontend
         └── 📁public
         └── 📁src

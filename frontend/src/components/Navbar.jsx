@@ -26,13 +26,6 @@ const Navbar = () => {
   useEffect(() => {
     const user = getCurrentUser();
     setUser(user);
-    // check at every 2 seconds for current user
-    const interval = setInterval(() => {
-      const updatedUser = getCurrentUser();
-      setUser(updatedUser);
-    }, 2000);
-
-    return () => clearInterval(interval);
   }, []);
 
   // handle logout

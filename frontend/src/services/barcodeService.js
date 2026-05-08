@@ -57,14 +57,9 @@ export const getBarcodeImageUrl = async (productId) => {
 export const formatBarcode = (barcode) => {
   if (!barcode) return "";
 
-  const cleaned = barcode.replace(/\D/g, ""); // Remove non-digits
-
-  if (cleaned.length === 12) {
+  if (barcode.length === 13) {
     //format as XXXX-XXXX-XXXX
-    return cleaned.replace(/(\d{1})(\d{4})(\d{4})(\d{4})/, "$1-$2-$3");
-  } else if (cleaned.length === 13) {
-    //format as XXXX-XXXX-XXXX
-    return cleaned.replace(/(\d{1})(\d{4})(\d{4})(\d{4})/, "$1-$2-$3-$4");
+    return barcode.replace(/(\d{1})(\d{4})(\d{4})(\d{4})/, "$1-$2-$3-$4");
   }
 
   return barcode; // return as it isif unexpected length

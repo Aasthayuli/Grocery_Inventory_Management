@@ -22,7 +22,7 @@ class Transaction(db.Model):
     notes = db.Column(db.Text(), nullable=True)
     date = db.Column(db.DateTime, default= datetime.utcnow, nullable=False)
 
-    def to_dict(self, include_relations=False):
+    def to_dict(self):
         """
         Convert Transaction Object into dictionary to be send as JSON Object
         Args:
@@ -36,22 +36,6 @@ class Transaction(db.Model):
             'notes':self.notes,
             'date':self.date.isoformat() if self.date else None
         }
-
-        # Include relateed objects if requested
-        if include_relations:
-            base_dict['product']={
-                'id' : self.product.id,
-                'name':self.product.name,
-                'sku':self.product.sku
-            } if self.product else None
-            base_dict['user'] = {
-                'id': self.user.id,
-                'username':self.user.username,
-                'role':self.user.role
-            } if self.user else None
-        else:
-            base_dict['product_id'] = self.product_id
-            base_dict['user_id'] =  self.user_id
 
         return base_dict
     

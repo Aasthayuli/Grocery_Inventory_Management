@@ -35,7 +35,7 @@ def error_response(message, errors=None, status_code=400):
     if errors is not None:
         response['errors'] = errors
 
-    return jsonify(response)
+    return jsonify(response), status_code
     
 def validate_required_fields(data, required_fields):
     """

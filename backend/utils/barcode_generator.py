@@ -1,5 +1,4 @@
 from barcode import EAN13
-import barcode
 from barcode.writer import ImageWriter
 import os
 import tempfile
@@ -68,7 +67,6 @@ def save_barcode_image_cloud(barcode_no):
                 temp_path = temp_file.name
                 temp_file.write(buffer.getvalue())
                 print(f'Barcode image saved to temp: {temp_path}', flush=True)
-                print("Temp file size:", os.path.getsize(temp_path), flush=True)
         except Exception as e:
             print(f'Error saving barcode to temp file: {str(e)}', flush=True)
             raise Exception(f'Failed to save barcode image to temp file: {str(e)}') from e

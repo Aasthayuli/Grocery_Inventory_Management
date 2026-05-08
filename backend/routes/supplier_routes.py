@@ -23,46 +23,19 @@ logger = AppLogger.get_logger(__name__)
 def get_all_suppliers():
     """
     Get all suppliers with pagination
-
-    Query parameters:
-            page: Page number (default: 10)
-            per_page: Items per page (default: 10)
-            search: Search in supplier name
     """
     try:
-        page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page',10, type=int)
-
-        # Build query
-        query = Supplier.query
-
-        # search by name
-        search = request.args.get('search','').strip()
-        if search:
-            query = query.filter(Supplier.name.ilike(f'%{search}%'))
-
         # order by name
-        query = query.order_by(Supplier.name.asc())
+        suppliers = Supplier.query.order_by(Supplier.name.asc()).all()
 
-        # paginate
-        result = paginate_query(query, page, per_page)
+        suppliers_data = [s.to_dict() for s in suppliers]
 
-        suppliers_data = [s.to_dict() for s in result['items']]
-
-        logger.info(f'Suppliers fetched: page={page}, total= {result["total"]}')
+        logger.info(f'Suppliers fetched: total= {len(suppliers_data)}')
 
         return success_response(
             f'Suppliers retrieved successfully',
             data = {
-                'suppliers': suppliers_data,
-                'pagination': {
-                    'total': result['total'],
-                    'pages': result['pages'],
-                    'current_page': result['current_page'],
-                    'per_page':result['per_page'],
-                    'has_next': result['has_next'],
-                    'has_prev': result['has_prev']
-                }
+                'suppliers': suppliers_data
             }
         )
     except Exception as e:
@@ -97,8 +70,13 @@ def create_supplier():
         # check if supplier name already exists
         if Supplier.query.filter_by(name= data['name'].strip()).first():
             logger.warning(f'Supplier creation failed - Name already exists: {data["name"]}')
-            return error_response(f'Supplier name already exists', status_code= 400)
 
+        current_user = int(get_jwt_identity())
+        user = User.query.get(current_user)
+
+        if user.role not in ["Admin","admin"]:
+            return error_response(f'Unauthorized access attempt by {user.username}', status_code= 400)
+        
         # Create Supplier
         new_Supplier = Supplier(
             name= data['name'].strip(),
@@ -125,13 +103,18 @@ def create_supplier():
 @jwt_required()
 def update_supplier(supplier_id):
     """
-    Update Supplier Details
+    Update Supplier Details (Admin Only)
 
     Args:
         supplier_id: Supplier to be updated
 
     """
     try:
+        current_user = int(get_jwt_identity())
+        user = User.query.get(current_user)
+
+        if user.role not in ["Admin","admin"]:
+            return error_response(f'Unauthorized access attempt by {user.username}', status_code=403)
         supplier = Supplier.query.get(supplier_id)
 
         if not supplier:

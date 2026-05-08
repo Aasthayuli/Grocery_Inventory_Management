@@ -131,14 +131,12 @@ export const deleteProduct = async (productId) => {
 
 /**
  * Get products expiring within Specified days
- * @param {number} days - Days threshold (default: 7)
- * @returns {Promise} - Expiring products
+ * @param {Object} params - Query parameters
+ * @param {number} params.days - Days threshold (default: 7)
  */
-export const getExpiringProducts = async (days = 7) => {
+export const getExpiringProducts = async (params = {}) => {
   try {
-    const response = await api.get("/api/products/expiring", {
-      params: { days },
-    });
+    const response = await api.get("/api/products/expiring", { params });
     if (!response) {
       throw new Error("No response received from server");
     }
@@ -182,11 +180,9 @@ export const getExpiredProducts = async () => {
  * @param {number} threshold -Stock threshold (default: 10)
  * @returns {Promise} -Low stock products
  */
-export const getLowStockProducts = async (threshold = 10) => {
+export const getLowStockProducts = async (params = {}) => {
   try {
-    const response = await api.get("/api/products/low-stock", {
-      params: { threshold },
-    });
+    const response = await api.get("/api/products/low-stock", { params });
     if (!response) {
       throw new Error("No response received from server");
     }

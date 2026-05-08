@@ -26,8 +26,8 @@ const ExpiringProducts = () => {
         const expiredProducts = await getExpiredProducts();
         setProducts(expiredProducts.data);
       } else {
-        const days = activeTab === "7days" ? 7 : 30;
-        const response = await getExpiringProducts(days);
+        const req_days = activeTab === "7days" ? 7 : 30;
+        const response = await getExpiringProducts({ days: req_days });
         setProducts(response.data || []);
       }
 

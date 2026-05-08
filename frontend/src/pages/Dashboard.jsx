@@ -41,8 +41,8 @@ const Dashboard = () => {
       const [productRes, expiringRes, lowStockRes, transactionRes] =
         await Promise.all([
           getAllProducts({ per_page: 100 }),
-          getExpiringProducts(7),
-          getLowStockProducts(10),
+          getExpiringProducts({ days: 7 }),
+          getLowStockProducts({ threshold: 10 }),
           getTransactionStats(),
         ]);
 

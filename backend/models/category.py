@@ -26,6 +26,5 @@ class Category(db.Model):
         return {
             'id' : self.id,
             'name' : self.name,
-            'description' : self.description if self.description else None,
-            'product_count' : len(self.products)  # total products in this category
+            'description' : self.description if self.description else None
         }

@@ -143,7 +143,6 @@ export const Suppliers = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div></div>
           <div className="text-center">
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">
               Suppliers
@@ -152,13 +151,15 @@ export const Suppliers = () => {
               Manage your product suppliers
             </p>
           </div>
-          <button
-            onClick={() => handleOpenModal()}
-            className="cursor-pointer bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center space-x-2 text-sm sm:text-base"
-          >
-            <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
-            <span>Add Supplier</span>
-          </button>
+          {userIsAdmin && (
+            <button
+              onClick={() => handleOpenModal()}
+              className="cursor-pointer bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center space-x-2 text-sm sm:text-base"
+            >
+              <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span>Add Supplier</span>
+            </button>
+          )}
         </div>
 
         {/* Success Message */}
@@ -249,15 +250,15 @@ export const Suppliers = () => {
                   )}
                 </div>
 
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-4 border-t border-gray-200">
-                  <button
-                    onClick={() => handleOpenModal(supplier)}
-                    className="cursor-pointer bg-green-50 text-green-600 px-4 py-2 rounded-lg hover:bg-green-100 transition flex items-center justify-center space-x-2 text-sm sm:text-base"
-                  >
-                    <Edit className="h-4 w-4" />
-                    <span>Edit</span>
-                  </button>
-                  {userIsAdmin && (
+                {userIsAdmin && (
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-4 border-t border-gray-200">
+                    <button
+                      onClick={() => handleOpenModal(supplier)}
+                      className="cursor-pointer bg-green-50 text-green-600 px-4 py-2 rounded-lg hover:bg-green-100 transition flex items-center justify-center space-x-2 text-sm sm:text-base"
+                    >
+                      <Edit className="h-4 w-4" />
+                      <span>Edit</span>
+                    </button>
                     <button
                       onClick={() => handleDelete(supplier.id, supplier.name)}
                       className="cursor-pointer bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition flex items-center justify-center space-x-2 text-sm sm:text-base"
@@ -265,8 +266,8 @@ export const Suppliers = () => {
                       <Trash2 className="h-4 w-4" />
                       <span>Delete</span>
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

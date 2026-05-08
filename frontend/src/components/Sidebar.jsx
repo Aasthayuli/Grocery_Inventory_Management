@@ -23,56 +23,43 @@ const Sidebar = () => {
       name: "Dashboard",
       path: "/dashboard",
       icon: LayoutDashboard,
-      roles: ["admin", "staff"],
     },
     {
       name: "Products",
       path: "/products",
       icon: Package,
-      roles: ["admin", "staff"],
     },
     {
       name: "Categories",
       path: "/categories",
       icon: Layers,
-      roles: ["admin", "staff"],
     },
     {
       name: "Suppliers",
       path: "/suppliers",
       icon: Users,
-      roles: ["admin", "staff"],
     },
     {
       name: "Stock IN",
       path: "/stock-in",
       icon: TrendingUp,
-      roles: ["admin", "staff"],
     },
     {
       name: "Stock OUT",
       path: "/stock-out",
       icon: TrendingDown,
-      roles: ["admin", "staff"],
     },
     {
       name: "Reports",
       path: "/transactions",
       icon: BarChart3,
-      roles: ["admin", "staff"],
     },
     {
       name: "Expiring Items",
       path: "/expiring",
       icon: AlertCircle,
-      roles: ["admin", "staff"],
     },
   ];
-
-  const filteredMenuItems = menuItems.filter((item) => {
-    if (userIsAdmin) return true;
-    return item.roles.includes("staff");
-  });
 
   return (
     <>
@@ -133,7 +120,7 @@ const Sidebar = () => {
           {/* Navigation Links */}
           <nav className="flex-1 overflow-y-auto py-4">
             <ul className="space-y-2">
-              {filteredMenuItems.map((item) => {
+              {menuItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <li key={item.path}>
@@ -156,7 +143,7 @@ const Sidebar = () => {
                         className={`${isCollapsed ? "mx-auto" : "mr-3"} h-5 w-5`}
                       />
 
-                      {/* Text - Always show when expanded, tooltip when collapsed */}
+                      {/* Text - Always show when expanded*/}
                       {!isCollapsed ? (
                         <span className="font-medium">{item.name}</span>
                       ) : (

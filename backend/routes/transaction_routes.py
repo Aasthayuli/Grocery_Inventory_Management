@@ -89,7 +89,7 @@ def stock_in():
         return success_response(
             f'Stock IN successful',
             data={
-                'transaction': transaction.to_dict(include_relations=True),
+                'transaction': transaction.to_dict(),
                 'product': product.to_dict()
             },
             status_code= 201
@@ -163,7 +163,7 @@ def stock_out():
         return success_response(
             'Stock OUT successful',
             data= {
-                'transaction': transaction.to_dict(include_relations=True),
+                'transaction': transaction.to_dict(),
                 'product': product.to_dict(),
                 'low_stock_warning': product.quantity <= 10
             },

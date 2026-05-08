@@ -67,7 +67,7 @@ def create_category():
         db.session.commit()
 
         logger.info(f'New Category added - {new_category}')
-        return success_response(f'Category created successfully', data= new_category.to_dict(), status_code= 201)
+        return success_response(f'Category created successfully', status_code= 201)
     except Exception as e:
         db.session.rollback()
         logger.error(f'Error in creating category: {str(e)}')
@@ -116,7 +116,6 @@ def delete_category(category_id):
 
         if product_count > 0:
             logger.warning(f'Deleting category with {product_count} products: {category_name}')
-            pass
 
         db.session.delete(category)
         db.session.commit()
